@@ -10,7 +10,6 @@ import { useSocket } from '../hooks/useSocket';
 import { useRouter } from 'next/navigation';
 
 // ─── Utility: generate stable DM room ID ────────────────────────────────────
-// Sorting ensures A→B and B→A always get the same room
 function getDmRoomId(idA: string, idB: string): string {
   return 'dm_' + [idA, idB].sort().join('_');
 }
@@ -50,7 +49,7 @@ const EMOJI_CATEGORIES = [
   },
   {
     name: 'Hands',
-    emojis: '👋 🤚 🖐️ ✋ 🖖 🫱 🫲 🫳 🫴 🫷 🫸 👌 🤌 🤏 ✌️ 🤞 🫰 🤟 🤘 🤙 👈 👉 👆 🖕 👇 ☝️ 🫵 👍 👎 ✊ 👊 🤛 🤜 👏 🙌 🫶 👐 🤲 🤝 🙏 ✍️ 💅 🤳 💪 🦾 🦿 🦵 🦶 👂 🦻 👃 🧠 🫀 🫁 🦷 🦴 👀 👁️ 👅 👄 🫦'
+    emojis: '👋 🤚 🖐️ ✋ 🖖 🫱 🫲 🫳 🫴 🫷 🫸 👌 🤌 🤏 ✌️ 🤞 🫰 🤟 🤘 🤙 👈 👉 👆 🖕 👇 ☝️ 🫵 👍 👎 ✊ 👊 🤛 🤜 👏 🙌 🫶 👐 🤲 🤝 🙏 ✍️ 💅 🤳 💪 🦾 𦿿 🦵 🦶 👂 🦻 👃 🧠 🫀 🫁 🦷 🦴 👀 👁️ 👅 👄 🫦'
   },
   {
     name: 'People',
@@ -62,15 +61,15 @@ const EMOJI_CATEGORIES = [
   },
   {
     name: 'Nature',
-    emojis: '🐵 🐒 🦍 🦧 🐶 🐕 🦮 🐕‍🦺 🐩 🐺 🦊 🦝 🐱 🐈 🐈‍⬛ 🦁 🐯 🐅 🐆 🐴 🫎 🫏 🐎 🦄 🦓 🦌 🦬 🐮 🐂 🐃 🐄 🐷 🐖 🐗 🐽 🐏 🐑 🐐 🐪 🐫 🦙 🦒 🐘 🦣 🦏 🦛 🐭 🐁 🐀 🐹 🐰 🐇 🐿️ 🦫 🦔 🦇 🐻 🐻‍❄️ 🐨 🐼 🦥 🦦 🦨 🦘 🦡 🐾 🦃 🐔 🐓 🐣 🐤 🐥 🐦 🐧 🕊️ 🦅 🦆 🦢 🦉 🦤 🪶 🦩 🦚 🦜 🪽 🐦‍⬛ 🪿 🐸 🐊 🐢 🦎 🐍 🐲 🐉 🦕 🦖 🐳 🐋 🐬 🦭 🐟 🐠 🐡 🦈 🐙 🐚 🪸 🪼 🦀 🦞 🦐 🦑 🦪 🐌 🦋 🐛 🐜 🐝 🪲 🐞 🦗 🪳 🕷️ 🕸️ 🦂 🦟 🪰 🪱 🦠 💐 🌸 💮 🪷 🏵️ 🌹 🥀 🌺 🌻 🌼 🌷 🪻 🌱 🪴 🌲 🌳 🌴 🌵 🌾 🌿 ☘️ 🍀 🍁 🍂 🍃 🪹 🪺 🍄 🪨 🪵'
+    emojis: '🐵 🐒 🦍 🦧 🐶 🐕 🦮 🐕‍ 🐩 🐺 🦊 🦝 🐱 🐈 🐈‍⬛ 🦁 🐯 🐅 🐆 🐴 🫎 🫏 🐎 🦄 🦓 🦌 🦬 🐮 🐂 🐃 🐄 🐷 🐖 🐗 🐽 🐏 🐑 🐐 🐪 🐫 🦙 🦒 🐘 🦣 🦏 🦛 🐭 🐁 🐀 🐹 🐰 🐇 🐿️ 🦫 🦔 🦇 🐻 🐻‍❄️ 🐨 🐼 🦥 🦦 🦨 🦘 🦡 🐾 🦃 🐔 🐓 🐣 🐤 🐥 🐦 🐧 🕊️ 🦅 🦆 🦢 🦉 🦤 🪶 🦩 🦚 🦜 🪽 🐦‍⬛ 🪿 🐸 🐊 🐢 🦎 🐍 🐲 🐉 🦕 🦖 🐳 🐋 🐬 🦭 🐟 🐠 🐡 🦈 🐙 🐚 🪸 🪼 🦀 🦞 🦐 🦑 🦪 🐌 🦋 🐛 🐜 🐝 🪲 🐞 🦗 🪳 🕷️ 🕸️ 🦂 🦟 🪰 🪱 🦠 💐 🌸 💮 🪷 🏵️ 🌹 🥀 🌺 🌻 🌼 🌷 🪻 🌱 🪴 🌲 🌳 🌴 🌵 🌾 🌿 ☘️ 🍀 🍁 🍂 🍃 🪹 🪺 🍄 🪨 🪵'
   },
   {
     name: 'Food',
-    emojis: '🍇 🍈 🍉 🍊 🍋 🍋‍🟩 🍌 🍍 🥭 🍎 🍏 🍐 🍑 🍒 🍓 🫐 🥝 🍅 🫒 🥥 🥑 🍆 🥔 🥕 🌽 🌶️ 🫑 🥒 🥬 🥦 🧄 🧅 🥜 🫘 🌰 🫚 🫛 🍄‍🟫 🍞 🥐 🥖 🫓 🥨 🥯 🥞 🧇 🧀 🍖 🍗 🥩 🥓 🍔 🍟 🍕 🌭 🥪 🌮 🌯 🫔 🥙 🧆 🥚 🍳 🥘 🍲 🫕 🥣 🥗 🍿 🧈 🧂 🥫 🍱 🍘 🍙 🍚 🍛 🍜 🍝 🍠 🍢 🍣 🍤 🍥 🥮 🍡 🥟 🥠 🥡 🦪 🍦 🍧 🍨 🍩 🍪 🎂 🍰 🧁 🥧 🍫 🍬 🍭 🍮 🍯 🍼 🥛 ☕ 🫖 🍵 🍶 🍾 🍷 🍸 🍹 🍺 🍻 🥂 🥃 🫗 🥤 🧋 🧃 🧉 🧊 🥢 🍽️ 🍴 🥄 🔪 🫙 🏺'
+    emojis: '🍇 🍈 🍉 🍊 🍋 🍋‍🟩 🍌 🍍 🥭 🍎 🍏 🍐 🍑 🍒 🍓 🫐 🥝 🍅 🫒 🥥 🥑 茄 🥔 🥕 🌽 🌶️ 🫑 🥒 🥬 🥦 🧄 🧅 🥜 🫘 🌰 🫚 🫛 🍄‍🟫 🍞 🥐 🥖 🫓 🥨 🥯 🥞 🧇 🧀 🍖 🍗 🥩 🥓 🍔 🍟 🍕 🌭 🥪 🌮 🌯 🫔 🥙 🧆 🥚 🍳 🥘 🍲 🫕 🥣 🥗 🍿 🧈 🧂 🥫 🍱 🍘 🍙 🍚 🍛 🍜 🍝 🍠 🍢 🍣 🍤 🍥 🥮 🍡 🥟 🥠 🥡 🦪 🍦 🍧 🍨 🍩 🍪 🎂 🍰 🧁 🥧 🍫 🍬 🍭 🍮 🍯 🍼 🥛 ☕ 🫖 🍵 🍶 🍾 🍷 🍸 🍹 🍺 🍻 🥂 🥃 🫗 🥤 🧋 🧃 🧉 🧊 🥢 🍽️ 🍴 🥄 🔪 🫙 🏺'
   },
   {
     name: 'Places',
-    emojis: '🌍 🌎 🌏 🌐 🗺️ 🗾 🧭 🏔️ ⛰️ 🌋 🗻 🏕️ 🏖️ 🏜️ 🏝️ 🏞️ 🏟️ 🏛️ 🏗️ 🧱 🪨 🪵 🛖 🏘️ 🏚️ 🏠 🏡 🏢 🏣 🏤 🏥 🏦 🏨 🏩 🏪 🏫 🏬 🏭 🏯 🏰 💒 🗼 🗽 ⛪ 🕌 🛕 🕍 ⛩️ 🕋 ⛲ ⛺ 🌁 🌃 🏙️ 🌄 🌅 🌆 🌇 🌉 ♨️ 🎠 🛝 🎡 🎢 💈 🎪 🚂 🚃 🚄 🚅 🚆 🚇 🚈 🚉 🚊 🚝 🚞 🚋 🚌 🚍 🚎 🚐 🚑 🚒 🚓 🚔 🚕 🚖 🚗 🚘 🚙 🛻 🚚 🚛 🚜 🏎️ 🏍️ 🛵 🦽 🦼 🛺 🚲 🛴 🛹 🛼 🚏 🛣️ 🛤️ 🛢️ ⛽ 🛞 🚨 🚥 🚦 🛑 🚧 ⚓ 🛟 ⛵ 🛶 🚤 🛳️ ⛴️ 🛥️ 🚢 ✈️ 🛩️ 🛫 🛬 🪂 💺 🚁 🚟 🚠 🚡 🛰️ 🚀 🛸'
+    emojis: '🌍 🌎 🌏 🌐 🗺️ 🗾 🧭 🏔️ ⛰️ 🌋 🗻 🏕️ 🏖️ 沙漠 🏝️ 🏞️ 🏟️ 🏛️ 🏗️ 🧱 🪨 🪵 🛖 🏘️ 🏚️ 🏠 🏡 🏢 🏣 🏤 🏥 🏦 🏨 🏩 🏪 🏫 🏬 🏭 🏯 🏰 💒 🗼 🗽 ⛪ 🕌 🛕 🕍 ⛩️ 🕋 ⛲ ⛺ 🌁 🌃 🏙️ 🌄 🌅 🌆 🌇 🌉 ♨️ 🎠 🛝 🎡 🎢 💈 🎪 🚂 🚃 🚄 🚅 🚆 🚇 🚈 🚉 🚊 🚝 🚞 🚋 🚌 🚍 🚎 🚐 🚑 🚒 🚓 🚔 🚕 🚖 🚗 🚘 🚙 🛻 🚚 🚛 🚜 🏎️ 🏍️ 🛵 🦽 🦼 🛺 🚲 🛴 🛹 🛼 🚏 🛣️ 🛤️ 🛢️ ⛽ 🛞 🚨 🚥 🚦 🛑 🚧 ⚓ 🛟 ⛵ 🛶 🚤 🛳️ ⛴️ 🛥️ 🚢 ✈️ 🛩️ 🛫 🛬 🪂 💺 🚁 🚟 🚠 🚡 🛰️ 🚀 🛸'
   },
   {
     name: 'Activities',
@@ -78,7 +77,7 @@ const EMOJI_CATEGORIES = [
   },
   {
     name: 'Objects',
-    emojis: '👓 🕶️ 🥽 🥼 🦺 👔 👕 👖 🧣 🧤 🧥 🧦 👗 👘 🥻 🩱 🩲 🩳 👙 👚 🪭 👛 👜 👝 🛍️ 🎒 🩴 👞 👟 🥾 🥿 👠 👡 🩰 👢 🪮 👑 👒 🎩 🎓 🧢 🪖 ⛑️ 📿 💄 💍 💎 🔇 🔈 🔉 🔊 📢 📣 📯 🔔 🔕 🎼 🎵 🎶 🎙️ 🎚️ 🎛️ 🎤 🎧 📻 🎷 🪗 🎸 🎹 🎺 🎻 🪕 🥁 🪘 🪇 🪈 📱 📲 ☎️ 📞 📟 📠 🔋 🪫 🔌 💻 🖥️ 🖨️ ⌨️ 🖱️ 🖲️ 💽 💾 💿 📀 🧮 🎥 🎞️ 📽️ 🎬 📺 📷 📸 📹 📼 🔍 🔎 🕯️ 💡 🔦 🏮 🪔 📔 📕 📖 📗 📘 📙 📚 📓 📒 📃 📜 📄 📰 🗞️ 📑 🔖 🏷️ 💰 🪙 💴 💵 💶 💷 💸 💳 🧾 💹 ✉️ 📧 📨 📩 📤 📥 📦 📫 📪 📬 📭 📮 🗳️ ✏️ ✒️ 🖋️ 🖊️ 🖌️ 🖍️ 📝 💼 📁 📂 🗂️ 📅 📆 🗒️ 🗓️ 📇 📈 📉 📊 📋 📌 📍 📎 🖇️ 📏 📐 ✂️ 🗃️ 🗄️ 🗑️ 🔒 🔓 🔏 🔐 🔑 🗝️ 🔨 🪓 ⛏️ ⚒️ 🛠️ 🗡️ ⚔️ 💣 🪃 🏹 🛡️ 🪚 🔧 🪛 🔩 ⚙️ 🗜️ ⚖️ 🦯 🔗 ⛓️ 🪝 🧰 🧲 🪜 ⚗️ 🧪 🧫 🧬 🔬 🔭 📡 💉 🩸 💊 🩹 🩼 🩺 🩻 🚪 🛗 🪞 🪟 🛏️ 🛋️ 🪑 🚽 🪠 🚿 🛁 🪤 🪒 🧴 🧷 🧹 🧺 🧻 🪣 🧼 🫧 🪥 🧽 🧯 🛒 🚬 ⚰️ 🪦 ⚱️ 🧿 🪬 🗿 🪧 🪪'
+    emojis: '眼镜 🕶️ 🥽 🥼 🦺 👔 👕 👖 🧣 🧤 🧥 🧦 👗 👘 🥻 🩱 🩲 🩳 👙 👚 🪭 👛 👜 👝 🛍️ backpack 🩴 👞 👟 🥾 🥿 👠 👡 🩰 👢 🪮 👑 👒 🎩 🎓 🧢 🪖 ⛑️ 📿 💄 💍 💎 🔇 🔈 🔉 🔊 📢 📣 📯 🔔 🔕 🎼 🎵 🎶 🎙️ 🎚️ 🎛️ 🎤 🎧 📻 🎷 🪗 🎸 🎹 🎺 🎻 🪕 🥁 🪘 🪇 🪈 📱 📲 ☎️ 📞 📟 📠 🔋 🪫 🔌 💻 🖥️ 🖨️ ⌨️ 鼠标 🖲️ 💽 💾 💿 📀 🧮 🎥 🎞️ 📽️ 🎬 📺 📷 📸 📹 📼 🔍 🔎 🕯️ 💡 抄 🏮 🪔 📔 📕 📖 📗 📘 📙 📚 📓 📒 📃 📜 📄 📰 🗞️ 📑 🔖 🏷️ 💰 🪙 💴 💵 💶 💷 💸 💳 🧾 💹 ✉️ 📧 📨 📩 📤 📥 📦 📫 📪 📬 📭 📮 🗳️ ✏️ ✒️ 🖋️ 🖊️ 🖌️ 🖍️ 📝 💼 📁 📂 🗂️ 📅 📆 🗒️ 🗓️ 📇 📈 📉 📊 📋 📌 📍 📎 🖇️ 📏 📐 剪刀 🗃️ 🗄️ 🗑️ 🔒 🔓 🔏 🔐 🔑 🗝️ 🔨 🪓 ⛏️ ⚒️ 🛠️  dagger ⚔️ 💣 🪃 🏹 🛡️ 🪚 🔧 🪛 🔩 ⚙️ 🗜️ ⚖️ 🦯 🔗 ⛓️ 🪝 🧰 🧲 🪜 ⚗️ 🧪 🧫 🧬 🔬 🔭 📡 💉 🩸 💊 🩹 🩼 🩺 🩻 门 🛗 🪞 🪟 🛏️ 🛋️ 🪑  toilet 🪠 🚿 🛁 🪤 🪒 🧴 🧷 🧹 🧺 🧻 🪣 🧼 🫧 🪥 🧽 🧯 🛒 🚬 ⚰️ 🪦 ⚱️ 🧿 🪬 🗿 🪧 🪪'
   },
   {
     name: 'Symbols',
@@ -86,7 +85,7 @@ const EMOJI_CATEGORIES = [
   },
   {
     name: 'Flags',
-    emojis: '🏁 🚩 🎌 🏴 🏳️ 🏳️‍🌈 🏳️‍⚧️ 🏴‍☠️ 🇦🇨 🇦🇩 🇦🇪 🇦🇫 🇦🇬 🇦🇮 🇦🇱 🇦🇲 🇦🇴 🇦🇶 🇦🇷 🇦🇸 🇦🇹 🇦🇺 🇦🇼 🇦🇽 🇦🇿 🇧🇦 🇧🇧 🇧🇩 🇧🇪 🇧🇫 🇧🇬 🇧🇭 🇧🇮 🇧🇯 🇧🇱 🇧🇲 🇧🇳 🇧🇴 🇧🇶 🇧🇷 🇧🇸 🇧🇹 🇧🇻 🇧🇼 🇧🇾 🇧🇿 🇨🇦 🇨🇨 🇨🇩 🇨🇫 🇨🇬 🇨🇭 🇨🇮 🇨🇰 🇨🇱 🇨🇲 🇨🇳 🇨🇴 🇨🇵 🇨🇷 🇨🇺 🇨🇻 🇨🇼 🇨🇽 🇨🇾 🇨🇿 🇩🇪 🇩🇬 🇩🇯 🇩🇰 🇩🇲 🇩🇴 🇩🇿 🇪🇦 🇪🇨 🇪🇪 🇪🇬 🇪🇭 🇪🇷 🇪🇸 🇪🇹 🇪🇺 🇫🇮 🇫🇯 🇫🇰 🇫🇲 🇫🇴 🇫🇷 🇬🇦 🇬🇧 🇬🇩 🇬🇪 🇬🇫 🇬🇬 🇬🇭 🇬🇮 🇬🇱 🇬🇲 🇬🇳 🇬🇵 🇬🇶 🇬🇷 🇬🇸 🇬🇹 🇬🇺 🇬🇼 🇬🇾 🇭🇰 🇭🇲 🇭🇳 🇭🇷 🇭🇹 🇭🇺 🇮🇨 🇮🇩 🇮🇪 🇮🇱 🇮🇲 🇮🇳 🇮🇴 🇮🇶 🇮🇷 🇮🇸 🇮🇹 🇯🇪 🇯🇲 🇯🇴 🇯🇵 🇰🇪 🇰🇬 🇰🇭 🇰🇮 🇰🇲 🇰🇳 🇰🇵 🇰🇷 🇰🇼 🇰🇾 🇰🇿 🇱🇦 🇱🇧 🇱🇨 🇱🇮 🇱🇰 🇱🇷 🇱🇸 🇱🇹 🇱🇺 🇱🇻 🇱🇾 🇲🇦 🇲🇨 🇲🇩 🇲🇪 🇲🇫 🇲🇬 🇲🇭 🇲🇰 🇲🇱 🇲🇲 🇲🇳 🇲🇴 🇲🇵 🇲🇶 🇲🇷 🇲🇸 🇲🇹 🇲🇺 🇲🇻 🇲🇼 🇲🇽 🇲🇾 🇲🇿 🇳🇦 🇳🇨 🇳🇪 🇳🇫 🇳🇬 🇳🇮 🇳🇱 🇳🇴 🇳🇵 🇳🇷 🇳🇺 🇳🇿 🇴🇲 🇵🇦 🇵🇪 🇵🇫 🇵🇬 🇵🇭 🇵🇰 🇵🇱 🇵🇲 🇵🇳 🇵🇷 🇵🇸 🇵🇹 🇵🇼 🇵🇾 🇶🇦 🇷🇪 🇷🇴 🇷🇸 🇷🇺 🇷🇼 🇸🇦 🇸🇧 🇸🇨 🇸🇩 🇸🇪 🇸🇬 🇸🇭 🇸🇮 🇸🇯 🇸🇰 🇸🇱 🇸🇲 🇸🇳 🇸🇴 🇸🇷 🇸🇸 🇸🇹 🇸🇻 🇸🇽 🇸🇾 🇸🇿 🇹🇦 🇹🇨 🇹🇩 🇹🇫 🇹🇬 🇹🇭 🇹🇯 🇹🇰 🇹🇱 🇹🇲 🇹🇳 🇹🇴 🇹🇷 🇹🇹 🇹🇻 🇹🇼 🇹🇿 🇺🇦 🇺🇬 🇺🇲 🇺🇳 🇺🇸 🇺🇾 🇺🇿 🇻🇦 🇻🇨 🇻🇪 🇻🇬 🇻🇮 🇻🇳 🇻🇺 🇼🇫 🇼🇸 🇽🇰 🇾🇪 🇾🇹 🇿🇦 🇿🇲 🇿🇼'
+    emojis: '🏁 🚩 🎌 🏴 🏳️ 🏳️‍🌈 🏳️‍⚧️ 🏴‍☠️ 🇦🇨 🇦🇩 🇦🇪 🇦🇫 🇦🇬 🇦🇮 🇦🇱 🇦🇲 🇦🇴 🇦🇶 🇦🇷 🇦🇸 🇦🇹 🇦🇺 🇦🇼 🇦🇽 🇦🇿 🇧🇦 🇧🇧 🇧🇩 🇧🇪 🇧🇫 🇧🇬 🇧🇭 🇧🇮 🇧🇯 🇧🇱 🇧🇲 🇧🇳 🇧🇴 🇧嫌 🇧🇷 🇧🇸 🇧🇹 🇧🇻 🇧🇼 🇧🇾 🇧🇿 🇨加 🇨🇨 🇨🇩 🇨🇫 🇨隔 🇨🇭 🇨🇮 🇨🇰 🇨🇱 🇨🇲 🇨🇳 🇨🇴 🇨🇵 🇨🇷 🇨🇺 🇨🇻 🇨🇼 🇨🇽 🇨🇾 🇨🇿 🇩🇪 🇩🇬 🇩🇯 🇩🇰 🇩🇲 🇩🇴 🇩🇿 🇪🇦 🇪🇨 🇪🇪 🇪🇬 🇪🇭 🇪🇷 🇪伤害 🇪🇹 🇪🇺 🇫🇮 🇫🇯 🇫🇰 🇫🇲 🇫🇴 🇫🇷 🇬🇦 🇬🇧 🇬🇩 🇬🇪 🇬🇫 🇬🇬 🇬🇭 🇬🇮 🇬🇱 🇬🇲 🇬🇳 🇬🇵 🇬🇶 🇬🇷 🇬🇸 🇬🇹 🇬🇺 🇬🇼 🇬🇾 🇭🇰 🇭🇲 🇭🇳 🇭4 🇭🇹 🇭🇺 🇮🇨 🇮🇩 🇮🇪 🇮🇱 🇮🇲 🇮🇳 🇮🇴 🇮🇶 🇮🇷 🇮🇸 🇮🇹 🇯🇪 🇯🇲 🇯🇴 🇯🇵 🇰🇪 🇰🇬 🇰🇭 🇰🇮 🇰🇲 🇰🇳 🇰🇵 🇰🇷 🇰🇼 🇰🇾 🇰🇿 🇱🇦 🇱🇧 🇱🇨 🇱🇮 🇱🇰 🇱触 🇱🇸 🇱🇹 🇱🇺 🇱🇻 🇱🇾 🇲🇦 🇲🇨 🇲🇩 🇲🇪 🇲🇫 🇲🇬 🇲🇭 🇲🇰 🇲🇱 🇲🇲 🇲🇳 🇲🇴 🇲🇵 🇲🇶 🇲🇷 🇲🇸 🇲🇹 🇲🇺 🇲🇻 🇲🇼 🇲🇽 🇲🇾 🇲🇿 🇳🇦 🇳🇨 🇳🇪 🇳🇫 🇳🇬 🇳🇮 🇳🇱 🇳🇴 🇳🇵 🇳🇷 🇳🇺 🇳🇿 🇴🇲 🇵🇦 🇵🇪 🇵🇫 🇵🇬 🇵🇭 🇵🇰 🇵🇱 🇵🇲 🇵🇳 🇵4 🇵🇸 🇵🇹 🇵🇼 🇵🇾 🇶🇦 🇷🇪 🇷🇴 🇷🇸 🇷🇺 🇷🇼 🇸🇦 🇸🇧 🇸🇨 🇸🇩 🇸🇪 🇸🇬 🇸🇭 🇸🇮 🇸🇯 🇸🇰 🇸🇱 🇸🇲 🇸🇳 🇸🇴 🇸🇷 🇸🇸 🇸🇹 🇸🇻 🇸🇽 🇸🇾 🇸🇿 🇹🇦 🇹🇨 🇹🇩 🇹🇫 🇹🇬 🇹🇭 🇹🇯 🇹🇰 🇹🇱 🇹🇲 🇹🇳 🇹🇴 🇹🇷 🇹🇹 🇹🇻 🇹🇼 🇹🇿 🇺🇦 🇺🇬 🇺🇲 🇺🇳 🇺🇸 🇺🇾 🇺🇿 🇻🇦 🇻🇨 🇻🇪 🇻🇬 🇻🇮 🇻🇳 🇻🇺 🇼🇫 🇼🇸 🇽🇰 🇾🇪 🇾🇹 🇿🇦 🇿🇲 🇿🇼'
   }
 ].map(category => ({ ...category, emojis: category.emojis.split(' ') }));
 
@@ -217,7 +216,6 @@ function SettingsModal({ user, onClose, onUpdate, socket }: {
         className="bg-[#111b21] rounded-2xl w-full max-w-md mx-4 overflow-hidden shadow-2xl border border-[#2a3942]"
         onClick={e => e.stopPropagation()}
       >
-        {/* Header */}
         <div className="bg-[#202c33] px-5 py-4 flex items-center justify-between border-b border-[#2a3942]">
           <h2 className="text-[#e9edef] font-semibold text-base">Profile & Settings</h2>
           <button onClick={onClose} className="text-[#8696a0] hover:text-white transition-colors p-1 rounded-full hover:bg-[#2a3942]">
@@ -226,7 +224,6 @@ function SettingsModal({ user, onClose, onUpdate, socket }: {
         </div>
 
         <div className="p-6 space-y-5 overflow-y-auto max-h-[80vh]">
-          {/* Avatar Section */}
           <div className="flex flex-col items-center gap-3">
             <div className="relative">
               {avatarPreview
@@ -247,7 +244,6 @@ function SettingsModal({ user, onClose, onUpdate, socket }: {
             <p className="text-[#8696a0] text-xs">Tap camera icon to update photo</p>
           </div>
 
-          {/* Name */}
           <div className="space-y-1.5">
             <label className="text-[#25D366] text-[11px] font-semibold uppercase tracking-widest">Your Name</label>
             <div className="flex items-center gap-2 bg-[#202c33] rounded-xl px-4 py-3 focus-within:ring-2 ring-[#25D366] transition-all">
@@ -262,7 +258,6 @@ function SettingsModal({ user, onClose, onUpdate, socket }: {
             </div>
           </div>
 
-          {/* About */}
           <div className="space-y-1.5">
             <label className="text-[#25D366] text-[11px] font-semibold uppercase tracking-widest">About</label>
             <div className="flex items-center gap-2 bg-[#202c33] rounded-xl px-4 py-3 focus-within:ring-2 ring-[#25D366] transition-all">
@@ -277,7 +272,6 @@ function SettingsModal({ user, onClose, onUpdate, socket }: {
             </div>
           </div>
 
-          {/* Status */}
           <div className="space-y-1.5">
             <label className="text-[#25D366] text-[11px] font-semibold uppercase tracking-widest">Status</label>
             <div className="grid grid-cols-2 gap-2">
@@ -299,7 +293,6 @@ function SettingsModal({ user, onClose, onUpdate, socket }: {
             </div>
           </div>
 
-          {/* Actions */}
           <div className="flex gap-3 pt-1">
             <button
               onClick={handleSave}
@@ -363,7 +356,6 @@ function Bubble({ msg, isOwn, showTail }: { msg: AppMessage; isOwn: boolean; sho
           </a>
         )}
 
-        {/* Timestamp row */}
         <div className="flex items-center justify-end gap-1 mt-0.5 -mb-0.5">
           <span className="text-[10px] text-[#8696a0] select-none">{time}</span>
           {isOwn && (
@@ -391,7 +383,7 @@ export default function ChatLayout() {
   const [showSettings, setShowSettings] = useState(false);
   const [search, setSearch] = useState('');
   const [isMobile, setIsMobile] = useState(false);
-  const [showChat, setShowChat] = useState(false);   // mobile: show right panel
+  const [showChat, setShowChat] = useState(false);
   const [loadingMsg, setLoadingMsg] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [emojiCategory, setEmojiCategory] = useState(0);
@@ -401,7 +393,6 @@ export default function ChatLayout() {
   const inputRef = useRef<HTMLInputElement>(null);
   const attachRef = useRef<HTMLInputElement>(null);
 
-  // ── Responsive ───────────────────────────────────────────────────────────
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);
     check();
@@ -409,7 +400,6 @@ export default function ChatLayout() {
     return () => window.removeEventListener('resize', check);
   }, []);
 
-  // ── Bootstrap ────────────────────────────────────────────────────────────
   useEffect(() => {
     const init = async () => {
       try {
@@ -450,12 +440,9 @@ export default function ChatLayout() {
     if (!me) return;
     try {
       localStorage.setItem(`${CHAT_STORAGE_PREFIX}${me.id}`, JSON.stringify(messagesMap));
-    } catch {
-      // Browser storage can fill up when chats include image attachments.
-    }
+    } catch {}
   }, [messagesMap, me]);
 
-  // ── Load DM history when active contact changes ──────────────────────────
   useEffect(() => {
     if (!me || !activeContact) return;
     const roomId = getDmRoomId(me.id, activeContact.id);
@@ -476,12 +463,10 @@ export default function ChatLayout() {
       .finally(() => setLoadingMsg(false));
   }, [me, activeContact]);
 
-  // ── Scroll to bottom ─────────────────────────────────────────────────────
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messagesMap, activeContact, typers]);
 
-  // ── Socket events ────────────────────────────────────────────────────────
   useEffect(() => {
     if (!socket || !me) return;
 
@@ -491,7 +476,6 @@ export default function ChatLayout() {
 
       setMessagesMap(prev => {
         const existing = prev[roomId] || [];
-        // Replace optimistic
         const optIdx = existing.findIndex(
           m => m.pending &&
             m.senderId === me.id &&
@@ -504,7 +488,6 @@ export default function ChatLayout() {
           updated[optIdx] = incoming;
           return { ...prev, [roomId]: updated };
         }
-        // Deduplicate
         if (existing.some(m => m.id === msg.id)) return prev;
         return { ...prev, [roomId]: [...existing, incoming] };
       });
@@ -535,7 +518,6 @@ export default function ChatLayout() {
     };
   }, [socket, me, activeContact]);
 
-  // ── Join DM room when contact changes ────────────────────────────────────
   useEffect(() => {
     if (!socket || !me || !activeContact) return;
     const roomId = getDmRoomId(me.id, activeContact.id);
@@ -543,7 +525,6 @@ export default function ChatLayout() {
     return () => { socket.emit('leaveRoom', roomId); };
   }, [socket, me, activeContact]);
 
-  // ── Send message ─────────────────────────────────────────────────────────
   const handleSend = useCallback(() => {
     if (!input.trim() || !socket || !me || !activeContact) return;
     const roomId = getDmRoomId(me.id, activeContact.id);
@@ -617,7 +598,6 @@ export default function ChatLayout() {
     inputRef.current?.focus();
   };
 
-  // ── Typing ───────────────────────────────────────────────────────────────
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInput(e.target.value);
     if (!socket || !me || !activeContact) return;
@@ -627,7 +607,6 @@ export default function ChatLayout() {
     typingRef.current = setTimeout(() => socket.emit('typing', roomId, false), 2500);
   };
 
-  // ── Open chat ────────────────────────────────────────────────────────────
   const openChat = (contact: AppUser) => {
     setActiveContact(contact);
     setTypers(new Set());
@@ -638,18 +617,15 @@ export default function ChatLayout() {
 
   const goBack = () => { setShowChat(false); setActiveContact(null); };
 
-  // ── Profile update ───────────────────────────────────────────────────────
   const handleProfileUpdate = (updated: Partial<AppUser>) => {
     setMe(prev => prev ? { ...prev, ...updated } : prev);
   };
 
-  // ── Derived ──────────────────────────────────────────────────────────────
   const filteredContacts = contacts.filter(c =>
     (c.displayName || c.username).toLowerCase().includes(search.toLowerCase())
   );
 
   const sortedContacts = [...filteredContacts].sort((a, b) => {
-    // Online first
     const order = { online: 0, away: 1, invisible: 2, offline: 3 };
     const oa = order[a.status] ?? 3, ob = order[b.status] ?? 3;
     if (oa !== ob) return oa - ob;
@@ -659,7 +635,6 @@ export default function ChatLayout() {
   const activeRoomId = me && activeContact ? getDmRoomId(me.id, activeContact.id) : '';
   const activeMessages = messagesMap[activeRoomId] || [];
 
-  // Last message per contact for preview
   const getLastMsg = (contact: AppUser): AppMessage | null => {
     if (!me) return null;
     const roomId = getDmRoomId(me.id, contact.id);
@@ -680,10 +655,8 @@ export default function ChatLayout() {
     );
   }
 
-  // ─── Render ───────────────────────────────────────────────────────────────
   return (
     <div className="flex h-screen bg-[#111b21] overflow-hidden font-sans antialiased">
-
       {showSettings && (
         <SettingsModal
           user={me}
@@ -699,326 +672,225 @@ export default function ChatLayout() {
           className="flex flex-col bg-[#111b21] border-r border-[#202c33] flex-shrink-0"
           style={{ width: isMobile ? '100%' : 360 }}
         >
-          {/* My Profile Header */}
-          <div className="bg-[#202c33] px-4 py-3 flex items-center justify-between flex-shrink-0">
+          {/* Production WhatsApp/Telegram Style Header */}
+          <div className="bg-[#202c33] px-4 py-3 flex items-center justify-between flex-shrink-0 select-none">
+            <div className="flex items-center gap-3">
+              <img 
+                src="/icon.svg" 
+                alt="MConnect Logo" 
+                className="w-8 h-8 object-contain" 
+              />
+              <span className="text-[#e9edef] font-bold text-lg tracking-wide">MConnect</span>
+            </div>
+            
+            {/* User Account/Profile Control Toggle Button (Moved Right) */}
             <button
               onClick={() => setShowSettings(true)}
-              className="flex items-center gap-3 hover:opacity-80 transition-opacity min-w-0"
+              className="relative flex-shrink-0 hover:opacity-80 transition-opacity p-1 rounded-full focus:outline-none"
+              title="Profile & Settings"
             >
-              <div className="relative flex-shrink-0">
-                <Avatar user={me} size={42} />
-                <OnlineDot status={me.status} borderColor="#202c33" />
-              </div>
-              <div className="flex flex-col items-start min-w-0">
-                <span className="text-[#e9edef] font-semibold text-sm truncate max-w-[160px]">
-                  {me.displayName || me.username}
-                </span>
-                <span className="text-[#8696a0] text-xs capitalize">{me.status}</span>
-              </div>
+              <Avatar user={me} size={34} />
+              <OnlineDot status={me.status} borderColor="#202c33" />
             </button>
-            <div className="flex items-center gap-1">
-              <button
-                onClick={() => setShowSettings(true)}
-                className="p-2 rounded-full hover:bg-[#2a3942] text-[#8696a0] hover:text-[#e9edef] transition-colors"
-                title="Settings & Profile"
-              >
-                <Settings size={19} />
-              </button>
-            </div>
           </div>
 
-          {/* Search Bar */}
-          <div className="px-3 py-2 bg-[#111b21] flex-shrink-0">
-            <div className="flex items-center gap-2 bg-[#202c33] rounded-full px-4 py-2.5">
-              <Search size={15} className="text-[#8696a0] flex-shrink-0" />
+          {/* Search Contacts bar */}
+          <div className="p-2.5 bg-[#111b21] flex-shrink-0 border-b border-[#202c33]/40">
+            <div className="bg-[#202c33] flex items-center gap-4 px-3 py-1.5 rounded-xl">
+              <Search size={16} className="text-[#8696a0]" />
               <input
                 value={search}
                 onChange={e => setSearch(e.target.value)}
-                placeholder="Search contacts"
-                className="flex-1 bg-transparent text-[#d1d7db] text-sm placeholder-[#8696a0] focus:outline-none"
+                placeholder="Search or start a new chat"
+                className="bg-transparent text-sm text-[#d1d7db] placeholder-[#8696a0] focus:outline-none w-full"
               />
-              {search && (
-                <button onClick={() => setSearch('')} className="text-[#8696a0] hover:text-white transition-colors">
-                  <X size={14} />
-                </button>
-              )}
+              {search && <X size={16} className="text-[#8696a0] cursor-pointer" onClick={() => setSearch('')} />}
             </div>
           </div>
 
-          {/* Contacts List */}
-          <div className="flex-1 overflow-y-auto" style={{ scrollbarWidth: 'thin', scrollbarColor: '#202c33 transparent' }}>
-            {sortedContacts.length === 0 && (
-              <div className="flex flex-col items-center justify-center h-40 gap-2 opacity-50">
-                <MessageSquare size={32} className="text-[#8696a0]" />
+          {/* Active Members / Contacts List */}
+          <div className="flex-1 overflow-y-auto divide-y divide-[#202c33]/30">
+            {sortedContacts.length === 0 ? (
+              <div className="flex flex-col items-center justify-center h-48 text-center px-6">
                 <p className="text-[#8696a0] text-sm">No contacts found</p>
               </div>
-            )}
-
-            {sortedContacts.map(contact => {
-              const isActive = activeContact?.id === contact.id;
-              const lastMsg = getLastMsg(contact);
-              const lastMsgText = lastMsg
-                ? lastMsg.type === 'text' ? lastMsg.content
-                  : lastMsg.type === 'image' ? '📷 Photo' : '📎 File'
-                : contact.customStatus || 'Tap to chat';
-              const lastTime = lastMsg
-                ? (() => {
-                  const d = new Date(lastMsg.timestamp);
-                  const today = new Date();
-                  if (d.toDateString() === today.toDateString())
-                    return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                  return d.toLocaleDateString([], { month: 'short', day: 'numeric' });
-                })()
-                : '';
-
-              return (
-                <button
-                  key={contact.id}
-                  onClick={() => openChat(contact)}
-                  className={`w-full flex items-center gap-3 px-4 py-3 transition-colors text-left ${isActive ? 'bg-[#2a3942]' : 'hover:bg-[#202c33]'
-                    }`}
-                >
-                  <div className="relative flex-shrink-0">
-                    <Avatar user={contact} size={50} />
-                    <OnlineDot status={contact.status} borderColor={isActive ? '#2a3942' : '#111b21'} />
-                  </div>
-                  <div className="flex-1 min-w-0 border-b border-[#202c33] pb-3 pt-0.5">
-                    <div className="flex items-center justify-between">
-                      <span className="text-[#e9edef] font-medium text-sm truncate">
-                        {contact.displayName || contact.username}
-                      </span>
-                      {lastTime && (
-                        <span className="text-[#8696a0] text-[11px] flex-shrink-0 ml-2">{lastTime}</span>
-                      )}
+            ) : (
+              sortedContacts.map(c => {
+                const lastMsg = getLastMsg(c);
+                const isActive = activeContact?.id === c.id;
+                return (
+                  <div
+                    key={c.id}
+                    onClick={() => openChat(c)}
+                    className={`flex items-center gap-3 px-4 py-3 cursor-pointer transition-colors ${isActive ? 'bg-[#2a3942]' : 'hover:bg-[#202c33]/60'}`}
+                  >
+                    <div className="relative flex-shrink-0">
+                      <Avatar user={c} size={46} />
+                      <OnlineDot status={c.status} borderColor={isActive ? '#2a3942' : '#111b21'} />
                     </div>
-                    <p className="text-[#8696a0] text-xs truncate mt-0.5 max-w-[220px]">
-                      {lastMsgText}
-                    </p>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between mb-0.5">
+                        <h3 className="text-[#e9edef] font-medium text-[15px] truncate">{c.displayName}</h3>
+                        {lastMsg && (
+                          <span className="text-[11px] text-[#8696a0]">
+                            {new Date(lastMsg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-xs text-[#8696a0] truncate">
+                        {lastMsg ? (
+                          <>
+                            {lastMsg.senderId === me.id && <span className="text-[#53bdeb] mr-0.5">✓</span>}
+                            {lastMsg.type === 'text' && lastMsg.content}
+                            {lastMsg.type === 'image' && '📷 Photo'}
+                            {lastMsg.type === 'file' && '📁 Document'}
+                          </>
+                        ) : (
+                          c.customStatus || 'Hey there! I am using MConnect.'
+                        )}
+                      </p>
+                    </div>
                   </div>
-                </button>
-              );
-            })}
+                );
+              })
+            )}
           </div>
         </div>
       )}
 
       {/* ── RIGHT CHAT PANEL ────────────────────────────────────────────── */}
       {(!isMobile || showChat) && (
-        <div className="flex-1 flex flex-col min-w-0" style={{
-          background: '#0b141a',
-          backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cpath d='M0 0h80v80H0z' fill='%230b141a'/%3E%3Cpath d='M20 20h4v4h-4zm16 0h4v4h-4zm16 0h4v4h-4zm-32 16h4v4h-4zm16 0h4v4h-4zm16 0h4v4h-4zm-32 16h4v4h-4zm16 0h4v4h-4zm16 0h4v4h-4z' fill='%23182229' fill-opacity='.6'/%3E%3C/svg%3E")`
-        }}>
+        <div className="flex-1 flex flex-col bg-[#0b141a] relative h-full">
+          {/* Custom chat wallpaper layer asset */}
+          <div className="absolute inset-0 opacity-[0.06] bg-[url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png')] pointer-events-none z-0" />
 
-          {/* No chat selected */}
-          {!activeContact ? (
-            <div className="flex-1 flex flex-col items-center justify-center gap-5 opacity-60 select-none">
-              <div className="w-20 h-20 rounded-full bg-[#202c33] flex items-center justify-center">
-                <MessageSquare size={40} className="text-[#8696a0]" />
-              </div>
-              <div className="text-center">
-                <p className="text-[#e9edef] text-xl font-light mb-1">MConnect</p>
-                <p className="text-[#8696a0] text-sm">Select a contact to start chatting</p>
-              </div>
-            </div>
-          ) : (
+          {activeContact ? (
             <>
-              {/* Chat Header */}
-              <div className="bg-[#202c33] px-4 py-3 flex items-center justify-between flex-shrink-0 shadow-md z-10">
+              {/* Chat Window Top Bar Header */}
+              <div className="bg-[#202c33] px-4 py-2.5 flex items-center justify-between z-10 shadow-sm border-b border-[#202c33]/20">
                 <div className="flex items-center gap-3 min-w-0">
                   {isMobile && (
-                    <button onClick={goBack} className="text-[#8696a0] hover:text-white mr-1 flex-shrink-0">
-                      <ArrowLeft size={22} />
+                    <button onClick={goBack} className="text-[#aebac1] hover:text-[#e9edef] mr-1 p-1 rounded-full hover:bg-[#2a3942]">
+                      <ArrowLeft size={20} />
                     </button>
                   )}
                   <div className="relative flex-shrink-0">
                     <Avatar user={activeContact} size={40} />
                     <OnlineDot status={activeContact.status} borderColor="#202c33" />
                   </div>
-                  <div className="flex flex-col min-w-0">
-                    <span className="text-[#e9edef] font-semibold text-sm truncate">
-                      {activeContact.displayName || activeContact.username}
-                    </span>
-                    <span className="text-[#8696a0] text-xs">
-                      {isTyping ? (
-                        <span className="text-[#25D366] animate-pulse">typing...</span>
-                      ) : (
-                        activeContact.status === 'online' ? 'online' :
-                          activeContact.status === 'away' ? 'away' : 'last seen recently'
-                      )}
-                    </span>
+                  <div className="min-w-0">
+                    <h3 className="text-[#e9edef] font-medium text-sm md:text-base truncate">{activeContact.displayName}</h3>
+                    <p className="text-xs text-[#8696a0] truncate capitalize">
+                      {isTyping ? <span className="text-[#25D366] font-medium animate-pulse">typing...</span> : activeContact.status}
+                    </p>
                   </div>
                 </div>
-                <div className="flex items-center gap-1">
-                  <button
-                    onClick={() => setShowSettings(true)}
-                    className="p-2 rounded-full hover:bg-[#2a3942] text-[#8696a0] hover:text-white transition-colors"
-                    title="Settings"
-                  >
-                    <MoreVertical size={20} />
-                  </button>
+                <div className="flex items-center gap-3.5 text-[#aebac1]">
+                  <button className="hover:text-[#e9edef] transition-colors p-1.5 rounded-full hover:bg-[#2a3942] hidden sm:block"><Video size={18} /></button>
+                  <button className="hover:text-[#e9edef] transition-colors p-1.5 rounded-full hover:bg-[#2a3942] hidden sm:block"><Phone size={17} /></button>
+                  <div className="w-[1px] h-4 bg-[#2a3942] hidden sm:block" />
+                  <button className="hover:text-[#e9edef] transition-colors p-1.5 rounded-full hover:bg-[#2a3942]"><Search size={18} /></button>
+                  <button className="hover:text-[#e9edef] transition-colors p-1.5 rounded-full hover:bg-[#2a3942]"><MoreVertical size={18} /></button>
                 </div>
               </div>
 
-              {/* Messages */}
-              <div
-                className="flex-1 overflow-y-auto px-4 md:px-20 py-4"
-                style={{ scrollbarWidth: 'thin', scrollbarColor: '#202c33 transparent' }}
-              >
+              {/* Message History Feed Stream */}
+              <div className="flex-1 overflow-y-auto px-4 md:px-8 py-4 z-10 space-y-1">
                 {loadingMsg ? (
                   <div className="flex items-center justify-center h-full">
-                    <div className="w-7 h-7 border-4 border-[#25D366] border-t-transparent rounded-full animate-spin" />
+                    <div className="w-6 h-6 border-2 border-[#25D366] border-t-transparent rounded-full animate-spin" />
                   </div>
                 ) : (
-                  <>
-                    {activeMessages.length === 0 && (
-                      <div className="flex flex-col items-center justify-center h-full gap-3">
-                        <div className="bg-[#202c33]/60 backdrop-blur-sm rounded-2xl px-6 py-4 text-center max-w-xs">
-                          <p className="text-[#e9edef] text-sm font-medium mb-1">
-                            🔒 Messages are end-to-end saved
-                          </p>
-                          <p className="text-[#8696a0] text-xs">
-                            Say hi to {activeContact.displayName || activeContact.username}!
-                          </p>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Date separators + messages */}
-                    {(() => {
-                      const elements: React.ReactNode[] = [];
-                      let lastDate = '';
-
-                      activeMessages.forEach((msg, idx) => {
-                        const msgDate = new Date(msg.timestamp).toDateString();
-                        if (msgDate !== lastDate) {
-                          lastDate = msgDate;
-                          const label = (() => {
-                            const d = new Date(msg.timestamp);
-                            const today = new Date();
-                            const yesterday = new Date(today);
-                            yesterday.setDate(today.getDate() - 1);
-                            if (d.toDateString() === today.toDateString()) return 'Today';
-                            if (d.toDateString() === yesterday.toDateString()) return 'Yesterday';
-                            return d.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric' });
-                          })();
-                          elements.push(
-                            <div key={`date-${msgDate}`} className="flex items-center justify-center my-4">
-                              <span className="bg-[#182229] text-[#8696a0] text-xs px-4 py-1.5 rounded-full shadow select-none">
-                                {label}
-                              </span>
-                            </div>
-                          );
-                        }
-
-                        const isOwn = msg.senderId === me.id;
-                        const prev = activeMessages[idx - 1];
-                        const sameSenderAsPrev = prev?.senderId === msg.senderId;
-                        const withinMinute = prev &&
-                          new Date(msg.timestamp).getTime() - new Date(prev.timestamp).getTime() < 60000;
-                        const showTail = !sameSenderAsPrev || !withinMinute;
-
-                        elements.push(
-                          <Bubble key={msg.id} msg={msg} isOwn={isOwn} showTail={showTail} />
-                        );
-                      });
-                      return elements;
-                    })()}
-
-                    {/* Typing bubbles */}
-                    {isTyping && (
-                      <div className="flex justify-start mb-1">
-                        <div className="bg-[#202c33] rounded-2xl rounded-tl-sm px-4 py-3 flex items-center gap-1 shadow-sm">
-                          <span className="w-2 h-2 rounded-full bg-[#8696a0] animate-bounce" style={{ animationDelay: '0ms' }} />
-                          <span className="w-2 h-2 rounded-full bg-[#8696a0] animate-bounce" style={{ animationDelay: '160ms' }} />
-                          <span className="w-2 h-2 rounded-full bg-[#8696a0] animate-bounce" style={{ animationDelay: '320ms' }} />
-                        </div>
-                      </div>
-                    )}
-                    <div ref={bottomRef} />
-                  </>
+                  activeMessages.map((msg, idx) => {
+                    const isOwn = msg.senderId === me.id;
+                    const prevMsg = activeMessages[idx - 1];
+                    const showTail = !prevMsg || prevMsg.senderId !== msg.senderId;
+                    return <Bubble key={msg.id} msg={msg} isOwn={isOwn} showTail={showTail} />;
+                  })
                 )}
+                <div ref={bottomRef} />
               </div>
 
-              {/* Input Bar */}
-              <div className="relative bg-[#202c33] px-3 py-3 flex items-center gap-2 flex-shrink-0">
-                {showEmojiPicker && (
-                  <div className="absolute left-2 right-2 bottom-[68px] md:left-3 md:right-auto md:w-[430px] h-[330px] bg-[#111b21] border border-[#2a3942] rounded-lg shadow-2xl overflow-hidden z-20">
-                    <div className="flex items-center gap-1 px-2 py-2 border-b border-[#202c33] overflow-x-auto">
-                      {EMOJI_CATEGORIES.map((category, index) => (
-                        <button
-                          key={category.name}
-                          onClick={() => setEmojiCategory(index)}
-                          className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors ${emojiCategory === index
-                            ? 'bg-[#25D366] text-white'
-                            : 'bg-[#202c33] text-[#8696a0] hover:text-white hover:bg-[#2a3942]'
-                            }`}
-                        >
-                          {category.name}
-                        </button>
-                      ))}
-                    </div>
-                    <div className="grid grid-cols-8 sm:grid-cols-10 gap-1 p-2 h-[276px] overflow-y-auto" style={{ scrollbarWidth: 'thin', scrollbarColor: '#2a3942 transparent' }}>
-                      {EMOJI_CATEGORIES[emojiCategory].emojis.map((emoji, index) => (
-                        <button
-                          key={`${emoji}-${index}`}
-                          onClick={() => addEmoji(emoji)}
-                          className="h-9 rounded-md text-[22px] leading-none hover:bg-[#2a3942] transition-colors"
-                          title={emoji}
-                        >
-                          {emoji}
-                        </button>
-                      ))}
-                    </div>
+              {/* Emoji Picker Menu Overlay Drawer Container */}
+              {showEmojiPicker && (
+                <div className="bg-[#1f2c34] border-t border-[#2d3d46] z-20 flex flex-col h-48 select-none">
+                  <div className="flex overflow-x-auto bg-[#111b21] border-b border-[#2d3d46] scrollbar-none flex-shrink-0">
+                    {EMOJI_CATEGORIES.map((cat, i) => (
+                      <button
+                        key={cat.name}
+                        onClick={() => setEmojiCategory(i)}
+                        className={`px-4 py-2 text-xs font-semibold whitespace-nowrap transition-colors border-b-2 ${emojiCategory === i ? 'border-[#25D366] text-[#25D366]' : 'border-transparent text-[#8696a0] hover:text-[#e9edef]'}`}
+                      >
+                        {cat.name}
+                      </button>
+                    ))}
                   </div>
-                )}
+                  <div className="flex-1 overflow-y-auto p-3 grid grid-cols-8 sm:grid-cols-12 gap-2 text-2xl justify-items-center cursor-pointer">
+                    {EMOJI_CATEGORIES[emojiCategory].emojis.map((emoji, idx) => (
+                      <span key={idx} onClick={() => addEmoji(emoji)} className="hover:scale-125 active:scale-95 transition-transform duration-100">{emoji}</span>
+                    ))}
+                  </div>
+                </div>
+              )}
 
-                <button
-                  onClick={() => setShowEmojiPicker(prev => !prev)}
-                  className={`p-2.5 rounded-full hover:bg-[#2a3942] hover:text-white transition-colors flex-shrink-0 ${showEmojiPicker ? 'text-[#25D366] bg-[#2a3942]' : 'text-[#8696a0]'}`}
-                  title="Emoji"
-                >
-                  <Smile size={22} />
-                </button>
-                <button
-                  onClick={() => attachRef.current?.click()}
-                  className="p-2.5 rounded-full hover:bg-[#2a3942] text-[#8696a0] hover:text-white transition-colors flex-shrink-0"
-                  title="Attach"
-                >
-                  <Paperclip size={22} />
-                </button>
-                <input
-                  ref={attachRef}
-                  type="file"
-                  accept="image/*,.pdf,.doc,.docx,.txt,.zip"
-                  onChange={handleAttachmentChange}
-                  className="hidden"
-                />
+              {/* Message Typing Input Bar Layer Wrapper */}
+              <div className="bg-[#202c33] px-3 py-2 flex items-center gap-2.5 z-10 border-t border-[#202c33]/40">
+                <div className="flex items-center gap-1 text-[#aebac1]">
+                  <button
+                    onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                    className={`p-1.5 rounded-full hover:bg-[#2a3942] transition-colors ${showEmojiPicker ? 'text-[#25D366]' : 'hover:text-[#e9edef]'}`}
+                  >
+                    <Smile size={22} />
+                  </button>
+                  <button
+                    onClick={() => attachRef.current?.click()}
+                    className="p-1.5 rounded-full hover:bg-[#2a3942] hover:text-[#e9edef] transition-colors"
+                  >
+                    <Paperclip size={21} />
+                  </button>
+                  <input
+                    ref={attachRef}
+                    type="file"
+                    onChange={handleAttachmentChange}
+                    className="hidden"
+                    accept="image/*,application/pdf,text/plain,application/zip"
+                  />
+                </div>
 
-                <div className="flex-1 flex items-center bg-[#2a3942] rounded-full px-4 py-2.5 min-w-0">
+                <div className="flex-1">
                   <input
                     ref={inputRef}
                     value={input}
-                    onFocus={() => setShowEmojiPicker(false)}
                     onChange={handleInputChange}
-                    onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
+                    onKeyDown={e => e.key === 'Enter' && handleSend()}
                     placeholder="Type a message"
-                    className="flex-1 bg-transparent text-[#d1d7db] text-sm placeholder-[#8696a0] focus:outline-none min-w-0"
+                    className="w-full bg-[#2a3942] text-[#d1d7db] placeholder-[#8696a0] rounded-xl px-4 py-2 text-sm focus:outline-none"
                   />
                 </div>
 
                 <button
                   onClick={handleSend}
                   disabled={!input.trim()}
-                  className={`p-2.5 rounded-full transition-all flex-shrink-0 ${input.trim()
-                    ? 'bg-[#25D366] hover:bg-[#1da851] text-white shadow-lg shadow-[#25D366]/30 scale-100'
-                    : 'bg-[#2a3942] text-[#8696a0] scale-95 cursor-not-allowed'
-                    }`}
-                  title="Send"
+                  className="bg-[#00a884] disabled:bg-transparent text-[#111b21] disabled:text-[#aebac1] p-2 rounded-xl transition-all flex items-center justify-center flex-shrink-0 shadow-sm"
                 >
-                  <Send size={20} />
+                  <Send size={16} className={input.trim() ? "translate-x-[1px]" : ""} />
                 </button>
               </div>
             </>
+          ) : (
+            /* Splash / Welcome Screen Content State */
+            <div className="flex-1 flex flex-col items-center justify-center text-center p-6 z-10 select-none">
+              <div className="w-20 h-20 bg-[#202c33] rounded-full flex items-center justify-center mb-6 border border-[#2a3942]/40 shadow-xl">
+                <MessageSquare size={36} className="text-[#25D366]" />
+              </div>
+              <h2 className="text-[#e9edef] font-light text-2xl md:text-3xl mb-2 tracking-wide">MConnect for Web</h2>
+              <p className="text-[#8696a0] text-sm max-w-sm leading-relaxed mb-6">
+                Send and receive messages in real time. Select a contact from the roster view to begin a chat connection workspace.
+              </p>
+              <div className="flex items-center gap-1.5 text-xs text-[#667781] bg-[#202c33]/40 border border-[#2a3942]/20 px-3 py-1 rounded-full backdrop-blur-sm">
+                <span>🔐 End-to-end encrypted node transport layer active</span>
+              </div>
+            </div>
           )}
         </div>
       )}
