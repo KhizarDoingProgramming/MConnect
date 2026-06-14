@@ -17,7 +17,8 @@ export default function SignupPage() {
     setLoading(true);
     setError('');
     try {
-      const res = await fetch('/api/auth/signup', {
+      // Pointing directly to your Hugging Face API to bypass Vercel routing issues
+      const res = await fetch('https://khizardoingprogramming-mconnect-backend-api.hf.space/api/auth/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, username, password }),
