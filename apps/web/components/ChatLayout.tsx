@@ -4,8 +4,10 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   Search, MoreVertical, Check, CheckCheck, X,
   Camera, Pencil, LogOut, Send, Smile, Paperclip,
-  ArrowLeft, Settings, Phone, Video, Info, MessageSquare
+  ArrowLeft, Settings, Phone, Video, MessageSquare,
+  Users, Globe, Bell, Plus, Mic, MapPin
 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useSocket } from '../hooks/useSocket';
 import { useRouter } from 'next/navigation';
 import { fetchApi, removeAuthToken } from '@/lib/api';
@@ -44,50 +46,9 @@ interface AppMessage {
 const CHAT_STORAGE_PREFIX = 'mconnect_chat_backup_';
 
 const EMOJI_CATEGORIES = [
-  {
-    name: 'Smileys',
-    emojis: '😀 😃 😄 😁 😆 😅 😂 🤣 🥲 ☺️ 😊 😇 🙂 🙃 😉 😌 😍 🥰 😘 😗 😙 😚 😋 😛 😝 😜 🤪 🤨 🧐 🤓 😎 🥸 🤩 🥳 🙂‍↕️ 🙂‍↔️ 😏 😒 🙂‍↕️ 😞 😔 😟 😕 🙁 ☹️ 😣 😖 😫 😩 🥺 😢 😭 😮‍💨 😤 😠 😡 🤬 🤯 😳 🥵 🥶 😶‍🌫️ 😱 😨 😰 😥 😓 🫣 🤗 🫡 🤔 🫢 🤭 🤫 🤥 😶 😐 😑 😬 🫨 🫠 🙄 😯 😦 😧 😮 😲 🥱 😴 🤤 😪 😵 😵‍💫 🫥 🤐 🥴 🤢 🤮 🤧 😷 🤒 🤕 🤑 🤠 😈 👿 👹 👺 🤡 💩 👻 💀 ☠️ 👽 👾 🤖 🎃 😺 😸 😹 😻 😼 😽 🙀 😿 😾'
-  },
-  {
-    name: 'Hands',
-    emojis: '👋 🤚 🖐️ ✋ 🖖 🫱 🫲 🫳 🫴 🫷 🫸 👌 🤌 🤏 ✌️ 🤞 🫰 🤟 🤘 🤙 👈 👉 👆 🖕 👇 ☝️ 🫵 👍 👎 ✊ 👊 🤛 🤜 👏 🙌 🫶 👐 🤲 🤝 🙏 ✍️ 💅 🤳 💪 🦾 𦿿 🦵 🦶 👂 🦻 👃 🧠 🫀 🫁 🦷 🦴 👀 👁️ 👅 👄 🫦'
-  },
-  {
-    name: 'People',
-    emojis: '👶 🧒 👦 👧 🧑 👱 👨 🧔 🧔‍♂️ 🧔‍♀️ 👨‍🦰 👨‍🦱 👨‍🦳 👨‍🦲 👩 👩‍🦰 🧑‍🦰 👩‍🦱 🧑‍🦱 👩‍🦳 🧑‍🦳 👩‍🦲 🧑‍🦲 👱‍♀️ 👱‍♂️ 🧓 👴 👵 🙍 🙍‍♂️ 🙍‍♀️ 🙎 🙎‍♂️ 🙎‍♀️ 🙅 🙅‍♂️ 🙅‍♀️ 🙆 🙆‍♂️ 🙆‍♀️ 💁 💁‍♂️ 💁‍♀️ 🙋 🙋‍♂️ 🙋‍♀️ 🧏 🧏‍♂️ 🧏‍♀️ 🙇 🙇‍♂️ 🙇‍♀️ 🤦 🤦‍♂️ 🤦‍♀️ 🤷 🤷‍♂️ 🤷‍♀️ 🧑‍⚕️ 👨‍⚕️ 👩‍⚕️ 🧑‍🎓 👨‍🎓 👩‍🎓 🧑‍🏫 👨‍🏫 👩‍🏫 🧑‍⚖️ 👨‍⚖️ 👩‍⚖️ 🧑‍🌾 👨‍🌾 👩‍🌾 🧑‍🍳 👨‍🍳 👩‍🍳 🧑‍🔧 👨‍🔧 👩‍🔧 🧑‍🏭 👨‍🏭 👩‍🏭 🧑‍💻 👨‍💻 👩‍💻 🧑‍💼 👨‍💼 👩‍💼 🧑‍🚀 👨‍🚀 👩‍🚀 🧑‍🚒 👨‍🚒 👩‍🚒 👮 🕵️ 💂 🥷 👷 🫅 🤴 👸 👳 🧕 🤵 👰 🤰 🫃 🫄 🤱 👩‍🍼 👨‍🍼 🧑‍🍼 👼 🎅 🤶 🧑‍🎄 🦸 🦹 🧙 🧚 🧛 🧜 🧝 🧞 🧟 🧌 💆 💇 🚶 🧍 🧎 🏃 💃 🕺 🕴️ 👯 🧖 🧗 🤺 🏇 ⛷️ 🏂 🏌️ 🏄 🚣 🏊 ⛹️ 🏋️ 🚴 🚵 🤸 🤼 🤽 🤾 🤹 🧘 🛀 🛌'
-  },
-  {
-    name: 'Love',
-    emojis: '💌 💘 💝 💖 💗 💓 💞 💕 💟 ❣️ 💔 ❤️‍🔥 ❤️‍🩹 ❤️ 🩷 🧡 💛 💚 💙 🩵 💜 🤎 🖤 🩶 🤍 💋 💯 💢 💥 💫 💦 💨 🕳️ 💬 👁️‍🗨️ 🗨️ 🗯️ 💭 💤'
-  },
-  {
-    name: 'Nature',
-    emojis: '🐵 🐒 🦍 🦧 🐶 🐕 🦮 🐕‍ 🐩 🐺 🦊 🦝 🐱 🐈 🐈‍⬛ 🦁 🐯 🐅 🐆 🐴 🫎 🫏 🐎 🦄 🦓 🦌 🦬 🐮 🐂 🐃 🐄 🐷 🐖 🐗 🐽 🐏 🐑 🐐 🐪 🐫 🦙 🦒 🐘 🦣 🦏 🦛 🐭 🐁 🐀 🐹 🐰 🐇 🐿️ 🦫 🦔 🦇 🐻 🐻‍❄️ 🐨 🐼 🦥 🦦 🦨 🦘 🦡 🐾 🦃 🐔 🐓 🐣 🐤 🐥 🐦 🐧 🕊️ 🦅 🦆 🦢 🦉 🦤 🪶 🦩 🦚 🦜 🪽 🐦‍⬛ 🪿 🐸 🐊 🐢 🦎 🐍 🐲 🐉 🦕 🦖 🐳 🐋 🐬 🦭 🐟 🐠 🐡 🦈 🐙 🐚 🪸 🪼 🦀 🦞 🦐 🦑 🦪 🐌 🦋 🐛 🐜 🐝 🪲 🐞 🦗 🪳 🕷️ 🕸️ 🦂 🦟 🪰 🪱 🦠 💐 🌸 💮 🪷 🏵️ 🌹 🥀 🌺 🌻 🌼 🌷 🪻 🌱 🪴 🌲 🌳 🌴 🌵 🌾 🌿 ☘️ 🍀 🍁 🍂 🍃 🪹 🪺 🍄 🪨 🪵'
-  },
-  {
-    name: 'Food',
-    emojis: '🍇 🍈 🍉 🍊 🍋 🍋‍🟩 🍌 🍍 🥭 🍎 🍏 🍐 🍑 🍒 🍓 🫐 🥝 🍅 🫒 🥥 🥑 茄 🥔 🥕 🌽 🌶️ 🫑 🥒 🥬 🥦 🧄 🧅 🥜 🫘 🌰 🫚 🫛 🍄‍🟫 🍞 🥐 🥖 🫓 🥨 🥯 🥞 🧇 🧀 🍖 🍗 🥩 🥓 🍔 🍟 🍕 🌭 🥪 🌮 🌯 🫔 🥙 🧆 🥚 🍳 🥘 🍲 🫕 🥣 🥗 🍿 🧈 🧂 🥫 🍱 🍘 🍙 🍚 🍛 🍜 🍝 🍠 🍢 🍣 🍤 🍥 🥮 🍡 🥟 🥠 🥡 🦪 🍦 🍧 🍨 🍩 🍪 🎂 🍰 🧁 🥧 🍫 🍬 🍭 🍮 🍯 🍼 🥛 ☕ 🫖 🍵 🍶 🍾 🍷 🍸 🍹 🍺 🍻 🥂 🥃 🫗 🥤 🧋 🧃 🧉 🧊 🥢 🍽️ 🍴 🥄 🔪 🫙 🏺'
-  },
-  {
-    name: 'Places',
-    emojis: '🌍 🌎 🌏 🌐 🗺️ 🗾 🧭 🏔️ ⛰️ 🌋 🗻 🏕️ 🏖️ 沙漠 🏝️ 🏞️ 🏟️ 🏛️ 🏗️ 🧱 🪨 🪵 🛖 🏘️ 🏚️ 🏠 🏡 🏢 🏣 🏤 🏥 🏦 🏨 🏩 🏪 🏫 🏬 🏭 🏯 🏰 💒 🗼 🗽 ⛪ 🕌 🛕 🕍 ⛩️ 🕋 ⛲ ⛺ 🌁 🌃 🏙️ 🌄 🌅 🌆 🌇 🌉 ♨️ 🎠 🛝 🎡 🎢 💈 🎪 🚂 🚃 🚄 🚅 🚆 🚇 🚈 🚉 🚊 🚝 🚞 🚋 🚌 🚍 🚎 🚐 🚑 🚒 🚓 🚔 🚕 🚖 🚗 🚘 🚙 🛻 🚚 🚛 🚜 🏎️ 🏍️ 🛵 🦽 🦼 🛺 🚲 🛴 🛹 🛼 🚏 🛣️ 🛤️ 🛢️ ⛽ 🛞 🚨 🚥 🚦 🛑 🚧 ⚓ 🛟 ⛵ 🛶 🚤 🛳️ ⛴️ 🛥️ 🚢 ✈️ 🛩️ 🛫 🛬 🪂 💺 🚁 🚟 🚠 🚡 🛰️ 🚀 🛸'
-  },
-  {
-    name: 'Activities',
-    emojis: '🎉 🎊 🎈 🎂 🎁 🎀 🎗️ 🎟️ 🎫 🎖️ 🏆 🏅 🥇 🥈 🥉 ⚽ ⚾ 🥎 🏀 🏐 🏈 🏉 🎾 🥏 🎳 🏏 🏑 🏒 🥍 🏓 🏸 🥊 🥋 🥅 ⛳ ⛸️ 🎣 🤿 🎽 🎿 🛷 🥌 🎯 🪀 🪁 🔫 🎱 🔮 🪄 🎮 🕹️ 🎰 🎲 🧩 🧸 🪅 🪩 🪆 ♠️ ♥️ ♦️ ♣️ ♟️ 🃏 🀄 🎴 🎭 🖼️ 🎨 🧵 🪡 🧶 🪢'
-  },
-  {
-    name: 'Objects',
-    emojis: '眼镜 🕶️ 🥽 🥼 🦺 👔 👕 👖 🧣 🧤 🧥 🧦 👗 👘 🥻 🩱 🩲 🩳 👙 👚 🪭 👛 👜 👝 🛍️ backpack 🩴 👞 👟 🥾 🥿 👠 👡 🩰 👢 🪮 👑 👒 🎩 🎓 🧢 🪖 ⛑️ 📿 💄 💍 💎 🔇 🔈 🔉 🔊 📢 📣 📯 🔔 🔕 🎼 🎵 🎶 🎙️ 🎚️ 🎛️ 🎤 🎧 📻 🎷 🪗 🎸 🎹 🎺 🎻 🪕 🥁 🪘 🪇 🪈 📱 📲 ☎️ 📞 📟 📠 🔋 🪫 🔌 💻 🖥️ 🖨️ ⌨️ 鼠标 🖲️ 💽 💾 💿 📀 🧮 🎥 🎞️ 📽️ 🎬 📺 📷 📸 📹 📼 🔍 🔎 🕯️ 💡 抄 🏮 🪔 📔 📕 📖 📗 📘 📙 📚 📓 📒 📃 📜 📄 📰 🗞️ 📑 🔖 🏷️ 💰 🪙 💴 💵 💶 💷 💸 💳 🧾 💹 ✉️ 📧 📨 📩 📤 📥 📦 📫 📪 📬 📭 📮 🗳️ ✏️ ✒️ 🖋️ 🖊️ 🖌️ 🖍️ 📝 💼 📁 📂 🗂️ 📅 📆 🗒️ 🗓️ 📇 📈 📉 📊 📋 📌 📍 📎 🖇️ 📏 📐 剪刀 🗃️ 🗄️ 🗑️ 🔒 🔓 🔏 🔐 🔑 🗝️ 🔨 🪓 ⛏️ ⚒️ 🛠️  dagger ⚔️ 💣 🪃 🏹 🛡️ 🪚 🔧 🪛 🔩 ⚙️ 🗜️ ⚖️ 🦯 🔗 ⛓️ 🪝 🧰 🧲 🪜 ⚗️ 🧪 🧫 🧬 🔬 🔭 📡 💉 🩸 💊 🩹 🩼 🩺 🩻 门 🛗 🪞 🪟 🛏️ 🛋️ 🪑  toilet 🪠 🚿 🛁 🪤 🪒 🧴 🧷 🧹 🧺 🧻 🪣 🧼 🫧 🪥 🧽 🧯 🛒 🚬 ⚰️ 🪦 ⚱️ 🧿 🪬 🗿 🪧 🪪'
-  },
-  {
-    name: 'Symbols',
-    emojis: '🏧 🚮 🚰 ♿ 🚹 🚺 🚻 🚼 🚾 🛂 🛃 🛄 🛅 ⚠️ 🚸 ⛔ 🚫 🚳 🚭 🚯 🚱 🚷 📵 🔞 ☢️ ☣️ ⬆️ ↗️ ➡️ ↘️ ⬇️ ↙️ ⬅️ ↖️ ↕️ ↔️ ↩️ ↪️ ⤴️ ⤵️ 🔃 🔄 🔙 🔚 🔛 🔜 🔝 🛐 ⚛️ 🕉️ ✡️ ☸️ ☯️ ✝️ ☦️ ☪️ ☮️ 🕎 🔯 🪯 ♈ ♉ ♊ ♋ ♌ ♍ ♎ ♏ ♐ ♑ ♒ ♓ ⛎ 🔀 🔁 🔂 ▶️ ⏩ ⏭️ ⏯️ ◀️ ⏪ ⏮️ 🔼 ⏫ 🔽 ⏬ ⏸️ ⏹️ ⏺️ ⏏️ 🎦 🔅 🔆 📶 🛜 📳 📴 ♀️ ♂️ ⚧️ ✖️ ➕ ➖ ➗ 🟰 ♾️ ‼️ ⁉️ ❓ ❔ ❕ ❗ 〰️ 💱 💲 ⚕️ ♻️ ⚜️ 🔱 📛 🔰 ⭕ ✅ ☑️ ✔️ ❌ ❎ ➰ ➿ 〽️ ✳️ ✴️ ❇️ ©️ ®️ ™️ #️⃣ *️⃣ 0️⃣ 1️⃣ 2️⃣ 3️⃣ 4️⃣ 5️⃣ 6️⃣ 7️⃣ 8️⃣ 9️⃣ 🔟 🔠 🔡 🔢 🔣 🔤 🅰️ 🆎 🅱️ 🆑 🆒 🆓 ℹ️ 🆔 Ⓜ️ 🆕 🆖 🅾️ 🆗 🅿️ 🆘 🆙 🆚 🈁 🈂️ 🈷️ 🈶 🈯 🉐 🈹 🈚 🈲 🉑 🈸 🈴 🈳 ㊗️ ㊙️ 🈺 🈵 🔴 🟠 🟡 🟢 🔵 🟣 🟤 ⚫ ⚪ 🟥 🟧 🟨 🟩 🟦 🟪 🟫 ⬛ ⬜ ◼️ ◻️ ◾ ◽ ▪️ ▫️ 🔶 🔷 🔸 🔹 🔺 🔻 💠 🔘 🔳 🔲'
-  },
-  {
-    name: 'Flags',
-    emojis: '🏁 🚩 🎌 🏴 🏳️ 🏳️‍🌈 🏳️‍⚧️ 🏴‍☠️ 🇦🇨 🇦🇩 🇦🇪 🇦🇫 🇦🇬 🇦🇮 🇦🇱 🇦🇲 🇦🇴 🇦🇶 🇦🇷 🇦🇸 🇦🇹 🇦🇺 🇦🇼 🇦🇽 🇦🇿 🇧🇦 🇧🇧 🇧🇩 🇧🇪 🇧🇫 🇧🇬 🇧🇭 🇧🇮 🇧🇯 🇧🇱 🇧🇲 🇧🇳 🇧🇴 🇧嫌 🇧🇷 🇧🇸 🇧🇹 🇧🇻 🇧🇼 🇧🇾 🇧🇿 🇨加 🇨🇨 🇨🇩 🇨🇫 🇨隔 🇨🇭 🇨🇮 🇨🇰 🇨🇱 🇨🇲 🇨🇳 🇨🇴 🇨🇵 🇨🇷 🇨🇺 🇨🇻 🇨🇼 🇨🇽 🇨🇾 🇨🇿 🇩🇪 🇩🇬 🇩🇯 🇩🇰 🇩🇲 🇩🇴 🇩🇿 🇪🇦 🇪🇨 🇪🇪 🇪🇬 🇪🇭 🇪🇷 🇪伤害 🇪🇹 🇪🇺 🇫🇮 🇫🇯 🇫🇰 🇫🇲 🇫🇴 🇫🇷 🇬🇦 🇬🇧 🇬🇩 🇬🇪 🇬🇫 🇬🇬 🇬🇭 🇬🇮 🇬🇱 🇬🇲 🇬🇳 🇬🇵 🇬🇶 🇬🇷 🇬🇸 🇬🇹 🇬🇺 🇬🇼 🇬🇾 🇭🇰 🇭🇲 🇭🇳 🇭4 🇭🇹 🇭🇺 🇮🇨 🇮🇩 🇮🇪 🇮🇱 🇮🇲 🇮🇳 🇮🇴 🇮🇶 🇮🇷 🇮🇸 🇮🇹 🇯🇪 🇯🇲 🇯🇴 🇯🇵 🇰🇪 🇰🇬 🇰🇭 🇰🇮 🇰🇲 🇰🇳 🇰🇵 🇰🇷 🇰🇼 🇰🇾 🇰🇿 🇱🇦 🇱🇧 🇱🇨 🇱🇮 🇱🇰 🇱触 🇱🇸 🇱🇹 🇱🇺 🇱🇻 🇱🇾 🇲🇦 🇲🇨 🇲🇩 🇲🇪 🇲🇫 🇲🇬 🇲🇭 🇲🇰 🇲🇱 🇲🇲 🇲🇳 🇲🇴 🇲🇵 🇲🇶 🇲🇷 🇲🇸 🇲🇹 🇲🇺 🇲🇻 🇲🇼 🇲🇽 🇲🇾 🇲🇿 🇳🇦 🇳🇨 🇳🇪 🇳🇫 🇳🇬 🇳🇮 🇳🇱 🇳🇴 🇳🇵 🇳🇷 🇳🇺 🇳🇿 🇴🇲 🇵🇦 🇵🇪 🇵🇫 🇵🇬 🇵🇭 🇵🇰 🇵🇱 🇵🇲 🇵🇳 🇵4 🇵🇸 🇵🇹 🇵🇼 🇵🇾 🇶🇦 🇷🇪 🇷🇴 🇷🇸 🇷🇺 🇷🇼 🇸🇦 🇸🇧 🇸🇨 🇸🇩 🇸🇪 🇸🇬 🇸🇭 🇸🇮 🇸🇯 🇸🇰 🇸🇱 🇸🇲 🇸🇳 🇸🇴 🇸🇷 🇸🇸 🇸🇹 🇸🇻 🇸🇽 🇸🇾 🇸🇿 🇹🇦 🇹🇨 🇹🇩 🇹🇫 🇹🇬 🇹🇭 🇹🇯 🇹🇰 🇹🇱 🇹🇲 🇹🇳 🇹🇴 🇹🇷 🇹🇹 🇹🇻 🇹🇼 🇹🇿 🇺🇦 🇺🇬 🇺🇲 🇺🇳 🇺🇸 🇺🇾 🇺🇿 🇻🇦 🇻🇨 🇻🇪 🇻🇬 🇻🇮 🇻🇳 🇻🇺 🇼🇫 🇼🇸 🇽🇰 🇾🇪 🇾🇹 🇿🇦 🇿🇲 🇿🇼'
-  }
+  { name: 'Smileys', emojis: '😀 😃 😄 😁 😆 😅 😂 🤣 🥲 ☺️ 😊 😇 🙂 🙃 😉 😌 😍 🥰 😘 😗 😙 😚 😋 😛 😝 😜 🤪 🤨 🧐 🤓 😎 🥸 🤩 🥳 🙂‍↕️ 🙂‍↔️ 😏 😒 🙂‍↕️ 😞 😔 😟 😕 🙁 ☹️ 😣 😖 😫 😩 🥺 😢 😭 😮‍💨 😤 😠 😡 🤬 🤯 😳 🥵 🥶 😶‍🌫️ 😱 😨 😰 😥 😓 🫣 🤗 🫡 🤔 🫢 🤭 🤫 🤥 😶 😐 😑 😬 🫨 🫠 🙄 😯 😦 😧 😮 😲 🥱 😴 🤤 😪 😵 😵‍💫 🫥 🤐 🥴 🤢 🤮 🤧 😷 🤒 🤕 🤑 🤠 😈 👿 👹 👺 🤡 💩 👻 💀 ☠️ 👽 👾 🤖 🎃 😺 😸 😹 😻 😼 😽 🙀 😿 😾' },
+  { name: 'Hands', emojis: '👋 🤚 🖐️ ✋ 🖖 🫱 🫲 🫳 🫴 🫷 🫸 👌 🤌 🤏 ✌️ 🤞 🫰 🤟 🤘 🤙 👈 👉 👆 🖕 👇 ☝️ 🫵 👍 👎 ✊ 👊 🤛 🤜 👏 🙌 🫶 👐 🤲 🤝 🙏 ✍️ 💅 🤳 💪 🦾 𦿿 🦵 🦶 👂 🦻 👃 🧠 🫀 🫁 🦷 🦴 👀 👁️ 👅 👄 🫦' },
+  { name: 'Nature', emojis: '🐵 🐒 🦍 🦧 🐶 🐕 🦮 🐕‍ 🐩 🐺 🦊 🦝 🐱 🐈 🐈‍⬛ 🦁 🐯 🐅 🐆 🐴 🫎 🫏 🐎 🦄 🦓 🦌 🦬 🐮 🐂 🐃 🐄 🐷 🐖 🐗 🐽 🐏 🐑 🐐 🐪 🐫 🦙 🦒 🐘 🦣 🦏 🦛 🐭 🐁 🐀 🐹 🐰 🐇 🐿️ 🦫 🦔 🦇 🐻 🐻‍❄️ 🐨 🐼 🦥 🦦 🦨 🦘 🦡 🐾 🦃 🐔 🐓 🐣 🐤 🐥 🐦 🐧 🕊️ 🦅 🦆 🦢 🦉 🦤 🪶 🦩 🦚 🦜 🪽 🐦‍⬛ 🪿 🐸 🐊 🐢 🦎 🐍 🐲 🐉 🦕 🦖 🐳 🐋 🐬 🦭 🐟 🐠 🐡 🦈 🐙 🐚 🪸 🪼 🦀 🦞 🦐 🦑 🦪 🐌 🦋 🐛 🐜 🐝 🪲 🐞 🦗 🪳 🕷️ 🕸️ 🦂 🦟 🪰 🪱 🦠 💐 🌸 💮 🪷 🏵️ 🌹 🥀 🌺 🌻 🌼 🌷 🪻 🌱 🪴 🌲 🌳 🌴 🌵 🌾 🌿 ☘️ 🍀 🍁 🍂 🍃 🪹 🪺 🍄 🪨 🪵' },
 ].map(category => ({ ...category, emojis: category.emojis.split(' ') }));
 
 function restoreMessages(raw: string | null): Record<string, AppMessage[]> {
@@ -119,8 +80,8 @@ function mergeMessages(existing: AppMessage[], incoming: AppMessage[]) {
 
 // ─── Avatar ───────────────────────────────────────────────────────────────────
 const AVATAR_COLORS = [
-  '#25D366', '#128C7E', '#075E54', '#00BCD4',
-  '#7C4DFF', '#FF6D00', '#E91E63', '#1565C0',
+  '#FFB7B2', '#FFDAC1', '#E2F0CB', '#B5EAD7',
+  '#C7CEEA', '#FF9AA2', '#F3B0C3', '#9EB9D4',
 ];
 function avatarColor(name: string) {
   let h = 0;
@@ -128,7 +89,7 @@ function avatarColor(name: string) {
   return AVATAR_COLORS[h % AVATAR_COLORS.length];
 }
 
-function Avatar({ user, size = 42 }: { user: Partial<AppUser>; size?: number }) {
+function Avatar({ user, size = 46 }: { user: Partial<AppUser>; size?: number }) {
   const name = user.displayName || user.username || '?';
   const initials = name.slice(0, 2).toUpperCase();
   if (user.avatarUrl) {
@@ -136,14 +97,14 @@ function Avatar({ user, size = 42 }: { user: Partial<AppUser>; size?: number }) 
       <img
         src={user.avatarUrl}
         alt={name}
-        className="rounded-full object-cover flex-shrink-0"
+        className="rounded-full object-cover flex-shrink-0 border-2 border-[#FAF3E6]"
         style={{ width: size, height: size }}
       />
     );
   }
   return (
     <div
-      className="rounded-full flex items-center justify-center text-white font-bold flex-shrink-0 select-none"
+      className="rounded-full flex items-center justify-center text-[#554E44] font-bold flex-shrink-0 select-none border-2 border-[#FAF3E6]"
       style={{ width: size, height: size, background: avatarColor(user.username || 'x'), fontSize: size * 0.36 }}
     >
       {initials}
@@ -151,12 +112,12 @@ function Avatar({ user, size = 42 }: { user: Partial<AppUser>; size?: number }) 
   );
 }
 
-function OnlineDot({ status, borderColor = '#111b21' }: { status: string; borderColor?: string }) {
-  const c = status === 'online' ? '#25D366' : status === 'away' ? '#FFC107' : '#636e72';
+function OnlineDot({ status, borderColor = '#FAF3E6' }: { status: string; borderColor?: string }) {
+  const c = status === 'online' ? '#5DB075' : status === 'away' ? '#FFC107' : '#BDBDBD';
   return (
     <span
       className="absolute bottom-0 right-0 rounded-full"
-      style={{ width: 11, height: 11, background: c, border: `2px solid ${borderColor}` }}
+      style={{ width: 12, height: 12, background: c, border: `2px solid ${borderColor}` }}
     />
   );
 }
@@ -210,80 +171,82 @@ function SettingsModal({ user, onClose, onUpdate, socket }: {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm" onClick={onClose}>
-      <div
-        className="bg-[#111b21] rounded-2xl w-full max-w-md mx-4 overflow-hidden shadow-2xl border border-[#2a3942]"
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-md" onClick={onClose}>
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95, y: 10 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95, y: 10 }}
+        className="bg-[#FAF3E6] rounded-[2rem] w-full max-w-md mx-4 overflow-hidden shadow-2xl border border-white/50"
         onClick={e => e.stopPropagation()}
       >
-        <div className="bg-[#202c33] px-5 py-4 flex items-center justify-between border-b border-[#2a3942]">
-          <h2 className="text-[#e9edef] font-semibold text-base">Profile & Settings</h2>
-          <button onClick={onClose} className="text-[#8696a0] hover:text-white transition-colors p-1 rounded-full hover:bg-[#2a3942]">
-            <X size={18} />
+        <div className="px-6 py-5 flex items-center justify-between border-b border-[#EAE3D9]">
+          <h2 className="text-[#3A352F] font-bold text-lg">Profile & Settings</h2>
+          <button onClick={onClose} className="text-[#968E85] hover:text-[#3A352F] transition-colors p-1.5 rounded-full hover:bg-black/5">
+            <X size={20} />
           </button>
         </div>
 
-        <div className="p-6 space-y-5 overflow-y-auto max-h-[80vh]">
+        <div className="p-6 space-y-6 overflow-y-auto max-h-[80vh]">
           <div className="flex flex-col items-center gap-3">
             <div className="relative">
               {avatarPreview
-                ? <img src={avatarPreview} alt="avatar" className="w-24 h-24 rounded-full object-cover ring-4 ring-[#25D366]" />
-                : <div className="w-24 h-24 rounded-full flex items-center justify-center text-white text-3xl font-bold ring-4 ring-[#25D366]"
+                ? <img src={avatarPreview} alt="avatar" className="w-24 h-24 rounded-full object-cover ring-4 ring-white shadow-md" />
+                : <div className="w-24 h-24 rounded-full flex items-center justify-center text-[#554E44] text-3xl font-bold ring-4 ring-white shadow-md"
                   style={{ background: avatarColor(user.username) }}>
                   {(displayName || user.username).slice(0, 2).toUpperCase()}
                 </div>
               }
               <button
                 onClick={() => fileRef.current?.click()}
-                className="absolute -bottom-1 -right-1 bg-[#25D366] hover:bg-[#1da851] text-white rounded-full p-2 shadow-lg transition-colors"
+                className="absolute -bottom-1 -right-1 bg-white text-[#3A352F] rounded-full p-2.5 shadow-lg hover:scale-105 transition-transform"
               >
-                <Camera size={13} />
+                <Camera size={14} />
               </button>
             </div>
             <input ref={fileRef} type="file" accept="image/png,image/jpeg,image/webp" onChange={handleFileChange} className="hidden" />
-            <p className="text-[#8696a0] text-xs">Tap camera icon to update photo</p>
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-[#25D366] text-[11px] font-semibold uppercase tracking-widest">Your Name</label>
-            <div className="flex items-center gap-2 bg-[#202c33] rounded-xl px-4 py-3 focus-within:ring-2 ring-[#25D366] transition-all">
-              <Pencil size={14} className="text-[#8696a0] flex-shrink-0" />
+            <label className="text-[#968E85] text-xs font-bold uppercase tracking-wider pl-1">Display Name</label>
+            <div className="flex items-center gap-3 bg-white rounded-2xl px-4 py-3.5 shadow-sm border border-black/5 focus-within:ring-2 ring-black/10 transition-all">
+              <Pencil size={16} className="text-[#968E85] flex-shrink-0" />
               <input
                 value={displayName}
                 onChange={e => setDisplayName(e.target.value)}
                 maxLength={32}
-                className="flex-1 bg-transparent text-[#d1d7db] text-sm focus:outline-none"
+                className="flex-1 bg-transparent text-[#3A352F] font-medium focus:outline-none"
                 placeholder="Your display name"
               />
             </div>
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-[#25D366] text-[11px] font-semibold uppercase tracking-widest">About</label>
-            <div className="flex items-center gap-2 bg-[#202c33] rounded-xl px-4 py-3 focus-within:ring-2 ring-[#25D366] transition-all">
-              <Pencil size={14} className="text-[#8696a0] flex-shrink-0" />
+            <label className="text-[#968E85] text-xs font-bold uppercase tracking-wider pl-1">About</label>
+            <div className="flex items-center gap-3 bg-white rounded-2xl px-4 py-3.5 shadow-sm border border-black/5 focus-within:ring-2 ring-black/10 transition-all">
+              <Pencil size={16} className="text-[#968E85] flex-shrink-0" />
               <input
                 value={customStatus}
                 onChange={e => setCustomStatus(e.target.value)}
                 maxLength={80}
-                className="flex-1 bg-transparent text-[#d1d7db] text-sm focus:outline-none"
+                className="flex-1 bg-transparent text-[#3A352F] font-medium focus:outline-none"
                 placeholder="Hey there! I am using MConnect."
               />
             </div>
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-[#25D366] text-[11px] font-semibold uppercase tracking-widest">Status</label>
+            <label className="text-[#968E85] text-xs font-bold uppercase tracking-wider pl-1">Status</label>
             <div className="grid grid-cols-2 gap-2">
               {(['online', 'away', 'invisible', 'offline'] as const).map(s => (
                 <button
                   key={s}
                   onClick={() => setStatus(s)}
-                  className={`py-2.5 rounded-xl text-sm font-medium capitalize transition-all border ${status === s
-                    ? 'bg-[#25D366] text-white border-[#25D366] shadow-md shadow-[#25D366]/20'
-                    : 'bg-[#202c33] text-[#8696a0] border-[#2a3942] hover:border-[#3b4a54]'
+                  className={`py-3 rounded-2xl text-sm font-semibold capitalize transition-all border ${status === s
+                    ? 'bg-white text-[#3A352F] border-transparent shadow-sm'
+                    : 'bg-transparent text-[#968E85] border-[#EAE3D9] hover:bg-white/50'
                     }`}
                 >
-                  <span className="mr-1.5">
+                  <span className="mr-2 text-base">
                     {s === 'online' ? '🟢' : s === 'away' ? '🟡' : s === 'invisible' ? '👻' : '⚫'}
                   </span>
                   {s}
@@ -292,24 +255,23 @@ function SettingsModal({ user, onClose, onUpdate, socket }: {
             </div>
           </div>
 
-          <div className="flex gap-3 pt-1">
+          <div className="flex gap-3 pt-2">
             <button
               onClick={handleSave}
               disabled={saving}
-              className="flex-1 bg-[#25D366] hover:bg-[#1da851] disabled:opacity-50 text-white font-semibold py-3 rounded-xl transition-all shadow-lg shadow-[#25D366]/20"
+              className="flex-1 bg-[#3A352F] hover:bg-[#2A2520] text-white disabled:opacity-50 font-bold py-3.5 rounded-2xl transition-all shadow-md active:scale-[0.98]"
             >
-              {saved ? '✓ Saved!' : saving ? 'Saving...' : 'Save Changes'}
+              {saved ? '✓ Saved!' : saving ? 'Saving...' : 'Save Profile'}
             </button>
             <button
               onClick={handleLogout}
-              className="flex items-center gap-2 bg-[#202c33] border border-[#f15c6d]/30 hover:bg-[#2a3942] text-[#f15c6d] px-4 py-3 rounded-xl font-semibold transition-all"
+              className="flex items-center justify-center bg-[#FFEAE6] text-[#FF5B5B] px-5 py-3.5 rounded-2xl font-bold transition-all hover:bg-[#FFDCD6] active:scale-[0.98]"
             >
-              <LogOut size={15} />
-              <span>Logout</span>
+              <LogOut size={18} />
             </button>
           </div>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }
@@ -319,52 +281,58 @@ function Bubble({ msg, isOwn, showTail }: { msg: AppMessage; isOwn: boolean; sho
   const time = new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
   return (
-    <div className={`flex mb-0.5 ${isOwn ? 'justify-end' : 'justify-start'}`}>
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      className={`flex mb-2 ${isOwn ? 'justify-end' : 'justify-start'}`}
+    >
       <div
         className={`
-          relative max-w-[72%] md:max-w-[58%] px-3 py-2 shadow-sm
+          relative max-w-[75%] md:max-w-[65%] px-5 py-3.5 shadow-sm
           ${isOwn
-            ? `bg-[#005c4b] text-[#e9edef] rounded-2xl ${showTail ? 'rounded-tr-sm' : ''}`
-            : `bg-[#202c33] text-[#e9edef] rounded-2xl ${showTail ? 'rounded-tl-sm' : ''}`
+            ? `bg-white text-[#3A352F] rounded-3xl ${showTail ? 'rounded-tr-md' : ''}`
+            : `bg-[#E3DCD1] text-[#3A352F] rounded-3xl ${showTail ? 'rounded-tl-md' : ''}`
           }
-          ${msg.pending ? 'opacity-60' : ''}
+          ${msg.pending ? 'opacity-50' : ''}
         `}
       >
         {msg.type === 'text' && (
-          <p className="text-sm leading-relaxed break-words whitespace-pre-wrap">{msg.content}</p>
+          <p className="text-[15px] leading-relaxed break-words whitespace-pre-wrap font-medium">{msg.content}</p>
         )}
         {msg.type === 'image' && msg.imageUrl && (
-          <div className="overflow-hidden rounded-xl -mx-1 -mt-1">
+          <div className="overflow-hidden rounded-2xl -mx-2 -mt-2 mb-1">
             <img src={msg.imageUrl} alt={msg.caption || 'image'} className="max-w-full max-h-64 object-cover w-full" />
-            {msg.caption && <p className="px-1 pt-1 pb-0 text-xs text-[#8696a0]">{msg.caption}</p>}
+            {msg.caption && <p className="px-3 pt-2 pb-1 text-sm font-medium">{msg.caption}</p>}
           </div>
         )}
         {msg.type === 'file' && (
           <a
             href={msg.content}
             download={msg.fileName || 'attachment'}
-            className="flex items-center gap-3 min-w-[180px] rounded-xl bg-black/15 px-3 py-2 hover:bg-black/25 transition-colors"
+            className="flex items-center gap-3 min-w-[200px] rounded-2xl bg-black/5 px-4 py-3 hover:bg-black/10 transition-colors"
           >
-            <Paperclip size={18} className="text-[#25D366] flex-shrink-0" />
+            <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center flex-shrink-0 shadow-sm">
+              <Paperclip size={18} className="text-[#3A352F]" />
+            </div>
             <span className="min-w-0">
-              <span className="block text-sm font-medium truncate">{msg.fileName || 'Attachment'}</span>
+              <span className="block text-sm font-bold truncate text-[#3A352F]">{msg.fileName || 'Attachment'}</span>
               {typeof msg.fileSize === 'number' && (
-                <span className="block text-[11px] text-[#8696a0]">{(msg.fileSize / 1024).toFixed(1)} KB</span>
+                <span className="block text-xs font-semibold text-[#968E85]">{(msg.fileSize / 1024).toFixed(1)} KB</span>
               )}
             </span>
           </a>
         )}
 
-        <div className="flex items-center justify-end gap-1 mt-0.5 -mb-0.5">
-          <span className="text-[10px] text-[#8696a0] select-none">{time}</span>
+        <div className={`flex items-center gap-1.5 mt-1.5 ${isOwn ? 'justify-end' : 'justify-start'}`}>
+          <span className="text-[10px] font-bold text-[#968E85] select-none">{time}</span>
           {isOwn && (
             msg.pending
-              ? <Check size={11} className="text-[#8696a0]" />
-              : <CheckCheck size={11} className="text-[#53bdeb]" />
+              ? <Check size={12} className="text-[#968E85]" />
+              : <CheckCheck size={12} className="text-[#5DB075]" />
           )}
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
@@ -386,6 +354,10 @@ export default function ChatLayout() {
   const [loadingMsg, setLoadingMsg] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [emojiCategory, setEmojiCategory] = useState(0);
+
+  // UI Tabs State
+  const [activeLeftTab, setActiveLeftTab] = useState<'contacts' | 'groups' | 'globe'>('contacts');
+  const [activeHeaderTab, setActiveHeaderTab] = useState<'chats' | 'calls' | 'notifications'>('chats');
 
   const bottomRef = useRef<HTMLDivElement>(null);
   const typingRef = useRef<NodeJS.Timeout | null>(null);
@@ -644,17 +616,17 @@ export default function ChatLayout() {
 
   if (!me) {
     return (
-      <div className="flex h-screen items-center justify-center bg-[#111b21]">
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-10 h-10 border-4 border-[#25D366] border-t-transparent rounded-full animate-spin" />
-          <p className="text-[#8696a0] text-sm font-medium">Loading MConnect...</p>
+      <div className="flex h-screen items-center justify-center bg-gradient-to-br from-[#E0F7FA] to-[#FFCCBC]">
+        <div className="flex flex-col items-center gap-6 bg-white/50 p-8 rounded-[2rem] backdrop-blur-md">
+          <div className="w-12 h-12 border-4 border-[#3A352F] border-t-transparent rounded-full animate-spin" />
+          <p className="text-[#3A352F] font-bold tracking-widest uppercase">Connecting...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="flex h-screen bg-[#111b21] overflow-hidden font-sans antialiased">
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-[#E8F3F1] via-[#F4EBE3] to-[#FCDED4] p-0 md:p-6 lg:p-10 font-sans antialiased selection:bg-[#3A352F]/10 text-[#3A352F]">
       {showSettings && (
         <SettingsModal
           user={me}
@@ -664,234 +636,331 @@ export default function ChatLayout() {
         />
       )}
 
-      {/* ── LEFT SIDEBAR ────────────────────────────────────────────────── */}
-      {(!isMobile || !showChat) && (
-        <div
-          className="flex flex-col bg-[#111b21] border-r border-[#202c33] flex-shrink-0"
-          style={{ width: isMobile ? '100%' : 360 }}
-        >
-          {/* Production WhatsApp/Telegram Style Header */}
-          <div className="bg-[#202c33] px-4 py-3 flex items-center justify-between flex-shrink-0 select-none">
-            <div className="flex items-center gap-3">
-              <img 
-                src="/icon.svg" 
-                alt="MConnect Logo" 
-                className="w-8 h-8 object-contain" 
-              />
-              <span className="text-[#e9edef] font-bold text-lg tracking-wide">MConnect</span>
+      {/* Main Glassmorphic Container */}
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.98 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+        className="flex w-full h-screen md:h-full max-w-[1400px] md:max-h-[850px] bg-[#FAF3E6]/90 backdrop-blur-2xl md:rounded-[3rem] shadow-2xl overflow-hidden border border-white/60 relative"
+      >
+        
+        {/* ── LEFT SIDEBAR (CONTACTS) ────────────────────────────────────────────────── */}
+        {(!isMobile || !showChat) && (
+          <div
+            className="flex flex-col border-r border-[#EAE3D9]/60 flex-shrink-0 relative z-10"
+            style={{ width: isMobile ? '100%' : '360px' }}
+          >
+            {/* User Profile Header (Top Left) */}
+            <div className="px-6 pt-6 pb-4 flex items-center justify-between">
+               <button onClick={() => setShowSettings(true)} className="flex items-center gap-3 hover:opacity-80 transition-opacity outline-none">
+                 <div className="relative">
+                   <Avatar user={me} size={48} />
+                   <OnlineDot status={me.status} />
+                 </div>
+                 <div className="text-left hidden sm:block md:hidden lg:block">
+                   <p className="font-bold text-[#3A352F] text-sm leading-tight">{me.displayName}</p>
+                   <p className="text-xs font-semibold text-[#968E85]">My Account</p>
+                 </div>
+               </button>
+               <button onClick={() => setShowSettings(true)} className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-[#3A352F] shadow-sm hover:scale-105 transition-transform">
+                 <Settings size={18} />
+               </button>
             </div>
-            
-            {/* User Account/Profile Control Toggle Button (Moved Right) */}
-            <button
-              onClick={() => setShowSettings(true)}
-              className="relative flex-shrink-0 hover:opacity-80 transition-opacity p-1 rounded-full focus:outline-none"
-              title="Profile & Settings"
-            >
-              <Avatar user={me} size={34} />
-              <OnlineDot status={me.status} borderColor="#202c33" />
-            </button>
-          </div>
 
-          {/* Search Contacts bar */}
-          <div className="p-2.5 bg-[#111b21] flex-shrink-0 border-b border-[#202c33]/40">
-            <div className="bg-[#202c33] flex items-center gap-4 px-3 py-1.5 rounded-xl">
-              <Search size={16} className="text-[#8696a0]" />
-              <input
-                value={search}
-                onChange={e => setSearch(e.target.value)}
-                placeholder="Search or start a new chat"
-                className="bg-transparent text-sm text-[#d1d7db] placeholder-[#8696a0] focus:outline-none w-full"
-              />
-              {search && <X size={16} className="text-[#8696a0] cursor-pointer" onClick={() => setSearch('')} />}
+            {/* Sub-Tabs (Person, Group, Globe) */}
+            <div className="px-6 py-2 flex items-center gap-2">
+              <button 
+                onClick={() => setActiveLeftTab('contacts')}
+                className={`flex-1 py-2 rounded-xl flex justify-center items-center transition-all ${activeLeftTab === 'contacts' ? 'bg-[#E3DCD1] text-[#3A352F] shadow-inner' : 'text-[#968E85] hover:bg-[#EAE3D9]'}`}
+              >
+                <Users size={18} />
+              </button>
+              <button 
+                onClick={() => setActiveLeftTab('groups')}
+                className={`flex-1 py-2 rounded-xl flex justify-center items-center transition-all ${activeLeftTab === 'groups' ? 'bg-[#E3DCD1] text-[#3A352F] shadow-inner' : 'text-[#968E85] hover:bg-[#EAE3D9]'}`}
+              >
+                <Users size={18} />
+              </button>
+              <button 
+                onClick={() => setActiveLeftTab('globe')}
+                className={`flex-1 py-2 rounded-xl flex justify-center items-center transition-all ${activeLeftTab === 'globe' ? 'bg-[#E3DCD1] text-[#3A352F] shadow-inner' : 'text-[#968E85] hover:bg-[#EAE3D9]'}`}
+              >
+                <Globe size={18} />
+              </button>
             </div>
-          </div>
 
-          {/* Active Members / Contacts List */}
-          <div className="flex-1 overflow-y-auto divide-y divide-[#202c33]/30">
-            {sortedContacts.length === 0 ? (
-              <div className="flex flex-col items-center justify-center h-48 text-center px-6">
-                <p className="text-[#8696a0] text-sm">No contacts found</p>
+            {/* Search Box */}
+            <div className="px-6 py-4">
+              <div className="bg-white rounded-full flex items-center px-4 py-3 shadow-sm border border-black/5 focus-within:ring-2 ring-black/10 transition-all">
+                <Search size={16} className="text-[#968E85]" />
+                <input
+                  value={search}
+                  onChange={e => setSearch(e.target.value)}
+                  placeholder="Search..."
+                  className="bg-transparent border-none outline-none ml-3 text-sm font-semibold text-[#3A352F] placeholder-[#B5B0AA] w-full"
+                />
+                {search && <X size={16} className="text-[#968E85] cursor-pointer hover:text-[#3A352F]" onClick={() => setSearch('')} />}
               </div>
-            ) : (
-              sortedContacts.map(c => {
-                const lastMsg = getLastMsg(c);
-                const isActive = activeContact?.id === c.id;
-                return (
-                  <div
-                    key={c.id}
-                    onClick={() => openChat(c)}
-                    className={`flex items-center gap-3 px-4 py-3 cursor-pointer transition-colors ${isActive ? 'bg-[#2a3942]' : 'hover:bg-[#202c33]/60'}`}
-                  >
-                    <div className="relative flex-shrink-0">
-                      <Avatar user={c} size={46} />
-                      <OnlineDot status={c.status} borderColor={isActive ? '#2a3942' : '#111b21'} />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between mb-0.5">
-                        <h3 className="text-[#e9edef] font-medium text-[15px] truncate">{c.displayName}</h3>
-                        {lastMsg && (
-                          <span className="text-[11px] text-[#8696a0]">
-                            {new Date(lastMsg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                          </span>
-                        )}
-                      </div>
-                      <p className="text-xs text-[#8696a0] truncate">
-                        {lastMsg ? (
-                          <>
-                            {lastMsg.senderId === me.id && <span className="text-[#53bdeb] mr-0.5">✓</span>}
-                            {lastMsg.type === 'text' && lastMsg.content}
-                            {lastMsg.type === 'image' && '📷 Photo'}
-                            {lastMsg.type === 'file' && '📁 Document'}
-                          </>
-                        ) : (
-                          c.customStatus || 'Hey there! I am using MConnect.'
-                        )}
-                      </p>
-                    </div>
-                  </div>
-                );
-              })
-            )}
-          </div>
-        </div>
-      )}
+            </div>
 
-      {/* ── RIGHT CHAT PANEL ────────────────────────────────────────────── */}
-      {(!isMobile || showChat) && (
-        <div className="flex-1 flex flex-col bg-[#0b141a] relative h-full">
-          {/* Custom chat wallpaper layer asset */}
-          <div className="absolute inset-0 opacity-[0.06] bg-[url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png')] pointer-events-none z-0" />
-
-          {activeContact ? (
-            <>
-              {/* Chat Window Top Bar Header */}
-              <div className="bg-[#202c33] px-4 py-2.5 flex items-center justify-between z-10 shadow-sm border-b border-[#202c33]/20">
-                <div className="flex items-center gap-3 min-w-0">
-                  {isMobile && (
-                    <button onClick={goBack} className="text-[#aebac1] hover:text-[#e9edef] mr-1 p-1 rounded-full hover:bg-[#2a3942]">
-                      <ArrowLeft size={20} />
-                    </button>
-                  )}
-                  <div className="relative flex-shrink-0">
-                    <Avatar user={activeContact} size={40} />
-                    <OnlineDot status={activeContact.status} borderColor="#202c33" />
-                  </div>
-                  <div className="min-w-0">
-                    <h3 className="text-[#e9edef] font-medium text-sm md:text-base truncate">{activeContact.displayName}</h3>
-                    <p className="text-xs text-[#8696a0] truncate capitalize">
-                      {isTyping ? <span className="text-[#25D366] font-medium animate-pulse">typing...</span> : activeContact.status}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3.5 text-[#aebac1]">
-                  <button className="hover:text-[#e9edef] transition-colors p-1.5 rounded-full hover:bg-[#2a3942] hidden sm:block"><Video size={18} /></button>
-                  <button className="hover:text-[#e9edef] transition-colors p-1.5 rounded-full hover:bg-[#2a3942] hidden sm:block"><Phone size={17} /></button>
-                  <div className="w-[1px] h-4 bg-[#2a3942] hidden sm:block" />
-                  <button className="hover:text-[#e9edef] transition-colors p-1.5 rounded-full hover:bg-[#2a3942]"><Search size={18} /></button>
-                  <button className="hover:text-[#e9edef] transition-colors p-1.5 rounded-full hover:bg-[#2a3942]"><MoreVertical size={18} /></button>
-                </div>
-              </div>
-
-              {/* Message History Feed Stream */}
-              <div className="flex-1 overflow-y-auto px-4 md:px-8 py-4 z-10 space-y-1">
-                {loadingMsg ? (
-                  <div className="flex items-center justify-center h-full">
-                    <div className="w-6 h-6 border-2 border-[#25D366] border-t-transparent rounded-full animate-spin" />
-                  </div>
+            {/* Contacts List */}
+            <div className="flex-1 overflow-y-auto px-4 pb-6 space-y-1">
+              <AnimatePresence>
+                {sortedContacts.length === 0 ? (
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center justify-center h-48 text-center px-6">
+                    <p className="text-[#968E85] text-sm font-semibold">No contacts found</p>
+                  </motion.div>
                 ) : (
-                  activeMessages.map((msg, idx) => {
-                    const isOwn = msg.senderId === me.id;
-                    const prevMsg = activeMessages[idx - 1];
-                    const showTail = !prevMsg || prevMsg.senderId !== msg.senderId;
-                    return <Bubble key={msg.id} msg={msg} isOwn={isOwn} showTail={showTail} />;
+                  sortedContacts.map((c, i) => {
+                    const lastMsg = getLastMsg(c);
+                    const isActive = activeContact?.id === c.id;
+                    return (
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: i * 0.03 }}
+                        key={c.id}
+                        onClick={() => openChat(c)}
+                        className={`flex items-center gap-4 px-4 py-3 cursor-pointer transition-all rounded-2xl ${isActive ? 'bg-[#E3DCD1] shadow-inner scale-[0.98]' : 'hover:bg-[#EAE3D9] hover:scale-[0.99]'}`}
+                      >
+                        <div className="relative flex-shrink-0">
+                          <Avatar user={c} size={48} />
+                          <OnlineDot status={c.status} borderColor={isActive ? '#E3DCD1' : '#FAF3E6'} />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between mb-1">
+                            <h3 className="text-[#3A352F] font-bold text-[15px] truncate">{c.displayName}</h3>
+                            {lastMsg && (
+                              <span className="text-[11px] font-bold text-[#968E85]">
+                                {new Date(lastMsg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-sm font-medium text-[#7C746B] truncate">
+                            {lastMsg ? (
+                              <span className="flex items-center gap-1">
+                                {lastMsg.senderId === me.id && <span className="text-[#5DB075]"><CheckCheck size={14}/></span>}
+                                {lastMsg.type === 'text' && lastMsg.content}
+                                {lastMsg.type === 'image' && '📷 Photo'}
+                                {lastMsg.type === 'file' && '📁 Document'}
+                              </span>
+                            ) : (
+                              c.customStatus || 'Hey there! I am using MConnect.'
+                            )}
+                          </p>
+                        </div>
+                      </motion.div>
+                    );
                   })
                 )}
-                <div ref={bottomRef} />
-              </div>
+              </AnimatePresence>
+            </div>
+          </div>
+        )}
 
-              {/* Emoji Picker Menu Overlay Drawer Container */}
-              {showEmojiPicker && (
-                <div className="bg-[#1f2c34] border-t border-[#2d3d46] z-20 flex flex-col h-48 select-none">
-                  <div className="flex overflow-x-auto bg-[#111b21] border-b border-[#2d3d46] scrollbar-none flex-shrink-0">
-                    {EMOJI_CATEGORIES.map((cat, i) => (
-                      <button
-                        key={cat.name}
-                        onClick={() => setEmojiCategory(i)}
-                        className={`px-4 py-2 text-xs font-semibold whitespace-nowrap transition-colors border-b-2 ${emojiCategory === i ? 'border-[#25D366] text-[#25D366]' : 'border-transparent text-[#8696a0] hover:text-[#e9edef]'}`}
+        {/* ── RIGHT CHAT PANEL ────────────────────────────────────────────── */}
+        {(!isMobile || showChat) && (
+          <div className="flex-1 flex flex-col relative z-10 bg-white/40">
+            {activeContact ? (
+              <>
+                {/* Chat Top Header */}
+                <div className="px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#EAE3D9]/60">
+                  
+                  {/* Left Tabs (Chats, Calls, Notifications) */}
+                  <div className="flex items-center gap-1 bg-[#EAE3D9] p-1 rounded-full self-start">
+                    {(['chats', 'calls', 'notifications'] as const).map(tab => (
+                      <button 
+                        key={tab}
+                        onClick={() => setActiveHeaderTab(tab)}
+                        className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold capitalize transition-all ${activeHeaderTab === tab ? 'bg-white shadow-sm text-[#3A352F]' : 'text-[#968E85] hover:text-[#3A352F]'}`}
                       >
-                        {cat.name}
+                        {tab === 'chats' && <MessageSquare size={16} />}
+                        {tab === 'calls' && <Phone size={16} />}
+                        {tab === 'notifications' && <Bell size={16} />}
+                        <span className="hidden lg:block">{tab}</span>
                       </button>
                     ))}
                   </div>
-                  <div className="flex-1 overflow-y-auto p-3 grid grid-cols-8 sm:grid-cols-12 gap-2 text-2xl justify-items-center cursor-pointer">
-                    {EMOJI_CATEGORIES[emojiCategory].emojis.map((emoji, idx) => (
-                      <span key={idx} onClick={() => addEmoji(emoji)} className="hover:scale-125 active:scale-95 transition-transform duration-100">{emoji}</span>
-                    ))}
+
+                  {/* Right Actions */}
+                  <div className="flex items-center gap-2">
+                    <button className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm text-[#3A352F] hover:scale-105 transition-transform"><Settings size={18} /></button>
+                    <button className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm text-[#3A352F] hover:scale-105 transition-transform"><MoreVertical size={18} /></button>
                   </div>
                 </div>
-              )}
 
-              {/* Message Typing Input Bar Layer Wrapper */}
-              <div className="bg-[#202c33] px-3 py-2 flex items-center gap-2.5 z-10 border-t border-[#202c33]/40">
-                <div className="flex items-center gap-1 text-[#aebac1]">
-                  <button
-                    onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-                    className={`p-1.5 rounded-full hover:bg-[#2a3942] transition-colors ${showEmojiPicker ? 'text-[#25D366]' : 'hover:text-[#e9edef]'}`}
-                  >
-                    <Smile size={22} />
-                  </button>
-                  <button
-                    onClick={() => attachRef.current?.click()}
-                    className="p-1.5 rounded-full hover:bg-[#2a3942] hover:text-[#e9edef] transition-colors"
-                  >
-                    <Paperclip size={21} />
-                  </button>
-                  <input
-                    ref={attachRef}
-                    type="file"
-                    onChange={handleAttachmentChange}
-                    className="hidden"
-                    accept="image/*,application/pdf,text/plain,application/zip"
-                  />
+                {/* Active Chat Info Bar */}
+                <div className="px-8 py-5 flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    {isMobile && (
+                      <button onClick={goBack} className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm text-[#3A352F] hover:scale-105 transition-transform mr-2">
+                        <ArrowLeft size={18} />
+                      </button>
+                    )}
+                    <div className="relative">
+                      <Avatar user={activeContact} size={52} />
+                      <OnlineDot status={activeContact.status} />
+                    </div>
+                    <div>
+                      <h2 className="text-xl font-extrabold text-[#3A352F]">{activeContact.displayName}</h2>
+                      <div className="flex items-center gap-1.5 mt-0.5">
+                        <span className={`w-2 h-2 rounded-full ${activeContact.status === 'online' ? 'bg-[#5DB075]' : 'bg-[#BDBDBD]'}`} />
+                        <span className="text-sm font-bold text-[#968E85] capitalize">{isTyping ? 'Typing...' : activeContact.status}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <button className="w-11 h-11 rounded-full bg-[#EAE3D9] flex items-center justify-center text-[#3A352F] hover:bg-[#E3DCD1] transition-colors"><Phone size={18} /></button>
+                    <button className="w-11 h-11 rounded-full bg-[#EAE3D9] flex items-center justify-center text-[#3A352F] hover:bg-[#E3DCD1] transition-colors"><Video size={18} /></button>
+                    <button className="w-11 h-11 rounded-full bg-transparent flex items-center justify-center text-[#968E85] hover:bg-[#EAE3D9] transition-colors"><MoreVertical size={20} /></button>
+                  </div>
                 </div>
 
-                <div className="flex-1">
-                  <input
-                    ref={inputRef}
-                    value={input}
-                    onChange={handleInputChange}
-                    onKeyDown={e => e.key === 'Enter' && handleSend()}
-                    placeholder="Type a message"
-                    className="w-full bg-[#2a3942] text-[#d1d7db] placeholder-[#8696a0] rounded-xl px-4 py-2 text-sm focus:outline-none"
-                  />
+                {/* Message History Feed Stream */}
+                <div className="flex-1 overflow-y-auto px-6 md:px-10 py-2 space-y-1">
+                  {loadingMsg ? (
+                    <div className="flex items-center justify-center h-full">
+                      <div className="w-8 h-8 border-4 border-[#3A352F] border-t-transparent rounded-full animate-spin" />
+                    </div>
+                  ) : (
+                    activeMessages.map((msg, idx) => {
+                      const isOwn = msg.senderId === me.id;
+                      const prevMsg = activeMessages[idx - 1];
+                      const showTail = !prevMsg || prevMsg.senderId !== msg.senderId;
+                      return <Bubble key={msg.id} msg={msg} isOwn={isOwn} showTail={showTail} />;
+                    })
+                  )}
+                  {isTyping && (
+                    <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} className="flex justify-start mb-2">
+                      <div className="bg-[#E3DCD1] px-4 py-3 rounded-3xl rounded-tl-md flex items-center gap-1.5">
+                        <span className="w-2 h-2 rounded-full bg-[#968E85] animate-bounce" />
+                        <span className="w-2 h-2 rounded-full bg-[#968E85] animate-bounce" style={{ animationDelay: '0.15s' }} />
+                        <span className="w-2 h-2 rounded-full bg-[#968E85] animate-bounce" style={{ animationDelay: '0.3s' }} />
+                      </div>
+                    </motion.div>
+                  )}
+                  <div ref={bottomRef} className="h-4" />
                 </div>
 
-                <button
-                  onClick={handleSend}
-                  disabled={!input.trim()}
-                  className="bg-[#00a884] disabled:bg-transparent text-[#111b21] disabled:text-[#aebac1] p-2 rounded-xl transition-all flex items-center justify-center flex-shrink-0 shadow-sm"
+                {/* Emoji Picker Overlay */}
+                <AnimatePresence>
+                  {showEmojiPicker && (
+                    <motion.div 
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 20 }}
+                      className="absolute bottom-24 left-10 right-10 md:left-20 md:right-20 bg-white rounded-[2rem] shadow-2xl border border-black/5 z-20 flex flex-col h-64 overflow-hidden"
+                    >
+                      <div className="flex overflow-x-auto bg-[#FAF3E6] border-b border-[#EAE3D9] scrollbar-none flex-shrink-0 p-2 gap-2">
+                        {EMOJI_CATEGORIES.map((cat, i) => (
+                          <button
+                            key={cat.name}
+                            onClick={() => setEmojiCategory(i)}
+                            className={`px-4 py-2 text-xs font-bold whitespace-nowrap rounded-full transition-colors ${emojiCategory === i ? 'bg-white text-[#3A352F] shadow-sm' : 'bg-transparent text-[#968E85] hover:bg-black/5'}`}
+                          >
+                            {cat.name}
+                          </button>
+                        ))}
+                      </div>
+                      <div className="flex-1 overflow-y-auto p-4 grid grid-cols-8 sm:grid-cols-10 gap-3 text-2xl justify-items-center cursor-pointer">
+                        {EMOJI_CATEGORIES[emojiCategory].emojis.map((emoji, idx) => (
+                          <span key={idx} onClick={() => addEmoji(emoji)} className="hover:scale-125 active:scale-95 transition-transform duration-100">{emoji}</span>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                {/* Bottom Input Area */}
+                <div className="px-6 md:px-10 pb-6 pt-2 z-10">
+                  <div className="bg-white rounded-full flex items-center p-2 shadow-lg shadow-black/5 border border-black/5">
+                    {/* Add Attachment Button */}
+                    <button
+                      onClick={() => attachRef.current?.click()}
+                      className="w-12 h-12 rounded-full flex items-center justify-center text-[#968E85] hover:bg-[#FAF3E6] hover:text-[#3A352F] transition-colors flex-shrink-0"
+                    >
+                      <Plus size={22} />
+                    </button>
+                    <input
+                      ref={attachRef}
+                      type="file"
+                      onChange={handleAttachmentChange}
+                      className="hidden"
+                      accept="image/*,application/pdf,text/plain,application/zip"
+                    />
+
+                    {/* Text Input */}
+                    <input
+                      ref={inputRef}
+                      value={input}
+                      onChange={handleInputChange}
+                      onKeyDown={e => e.key === 'Enter' && handleSend()}
+                      placeholder="Type message here..."
+                      className="flex-1 bg-transparent px-4 text-[15px] font-medium text-[#3A352F] placeholder-[#B5B0AA] focus:outline-none"
+                    />
+
+                    {/* Right Actions */}
+                    <div className="flex items-center gap-1 pr-1 flex-shrink-0">
+                      <button
+                        onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                        className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${showEmojiPicker ? 'bg-[#EAE3D9] text-[#3A352F]' : 'text-[#968E85] hover:bg-[#FAF3E6] hover:text-[#3A352F]'}`}
+                      >
+                        <Smile size={20} />
+                      </button>
+                      <button className="w-10 h-10 rounded-full flex items-center justify-center text-[#968E85] hover:bg-[#FAF3E6] hover:text-[#3A352F] transition-colors">
+                        <Mic size={20} />
+                      </button>
+                      <button
+                        onClick={handleSend}
+                        disabled={!input.trim()}
+                        className="w-12 h-12 rounded-full bg-[#3A352F] text-white flex items-center justify-center shadow-md disabled:opacity-50 disabled:scale-100 hover:scale-105 active:scale-95 transition-all ml-1"
+                      >
+                        <Send size={18} className={input.trim() ? "translate-x-[2px] -translate-y-[1px]" : ""} />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </>
+            ) : (
+              /* Splash / Welcome Screen Content State */
+              <div className="flex-1 flex flex-col items-center justify-center text-center p-8 z-10 select-none">
+                <motion.div 
+                  initial={{ scale: 0.9, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ duration: 0.5 }}
+                  className="w-32 h-32 bg-white rounded-[2.5rem] flex items-center justify-center mb-8 shadow-xl border border-black/5"
                 >
-                  <Send size={16} className={input.trim() ? "translate-x-[1px]" : ""} />
-                </button>
+                  <MessageSquare size={48} className="text-[#3A352F]" />
+                </motion.div>
+                <motion.h2 
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ duration: 0.5, delay: 0.1 }}
+                  className="text-[#3A352F] font-extrabold text-3xl md:text-4xl mb-4 tracking-tight"
+                >
+                  Welcome to MConnect
+                </motion.h2>
+                <motion.p 
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                  className="text-[#7C746B] text-lg max-w-md font-medium leading-relaxed mb-10"
+                >
+                  Send and receive messages in real time with our beautiful new interface.
+                </motion.p>
+                <motion.div 
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ duration: 0.5, delay: 0.3 }}
+                  className="flex items-center gap-2 text-sm font-bold text-[#5DB075] bg-white px-5 py-2.5 rounded-full shadow-sm"
+                >
+                  <span>🔐 End-to-end encrypted connection</span>
+                </motion.div>
               </div>
-            </>
-          ) : (
-            /* Splash / Welcome Screen Content State */
-            <div className="flex-1 flex flex-col items-center justify-center text-center p-6 z-10 select-none">
-              <div className="w-20 h-20 bg-[#202c33] rounded-full flex items-center justify-center mb-6 border border-[#2a3942]/40 shadow-xl">
-                <MessageSquare size={36} className="text-[#25D366]" />
-              </div>
-              <h2 className="text-[#e9edef] font-light text-2xl md:text-3xl mb-2 tracking-wide">MConnect for Web</h2>
-              <p className="text-[#8696a0] text-sm max-w-sm leading-relaxed mb-6">
-                Send and receive messages in real time. Select a contact from the roster view to begin a chat connection workspace.
-              </p>
-              <div className="flex items-center gap-1.5 text-xs text-[#667781] bg-[#202c33]/40 border border-[#2a3942]/20 px-3 py-1 rounded-full backdrop-blur-sm">
-                <span>🔐 End-to-end encrypted node transport layer active</span>
-              </div>
-            </div>
-          )}
-        </div>
-      )}
+            )}
+          </div>
+        )}
+      </motion.div>
     </div>
   );
 }
