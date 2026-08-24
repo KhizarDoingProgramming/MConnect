@@ -71,12 +71,12 @@ export default function LoginPage() {
           <div>
             <label className="text-[#968E85] dark:text-[#7C746B] text-xs uppercase tracking-widest font-bold block mb-1.5 pl-1 transition-colors duration-500">Email</label>
             <input
-              type="email"
+              type="text"
               value={email}
               onChange={e => setEmail(e.target.value)}
               required
               className="w-full bg-white dark:bg-[#2A2A2A] text-[#3A352F] dark:text-[#FDFBF7] font-medium rounded-2xl px-4 py-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-black/10 dark:focus:ring-white/10 shadow-sm border border-black/5 dark:border-white/5 transition-all duration-500"
-              placeholder="you@example.com"
+              placeholder="Username or email"
             />
           </div>
           <div>

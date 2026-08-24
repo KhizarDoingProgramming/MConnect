@@ -11,6 +11,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useSocket } from '../hooks/useSocket';
 import { useRouter } from 'next/navigation';
 import { fetchApi, removeAuthToken } from '@/lib/api';
+import { ThemeToggle } from './ThemeToggle';
 
 // ─── Utility: generate stable DM room ID ────────────────────────────────────
 function getDmRoomId(idA: string, idB: string): string {
@@ -181,9 +182,12 @@ function SettingsModal({ user, onClose, onUpdate, socket }: {
       >
         <div className="px-6 py-5 flex items-center justify-between border-b border-[#EAE3D9] dark:border-[#33312E]">
           <h2 className="text-[#3A352F] dark:text-[#FDFBF7] font-bold text-lg">Profile & Settings</h2>
-          <button onClick={onClose} className="text-[#968E85] dark:text-[#A19C95] hover:text-[#3A352F] dark:hover:text-white transition-colors p-1.5 rounded-full hover:bg-black/5 dark:hover:bg-white/10">
-            <X size={20} />
-          </button>
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <button onClick={onClose} className="text-[#968E85] dark:text-[#A19C95] hover:text-[#3A352F] dark:hover:text-white transition-colors p-1.5 rounded-full hover:bg-black/5 dark:hover:bg-white/10">
+              <X size={20} />
+            </button>
+          </div>
         </div>
 
         <div className="p-6 space-y-6 overflow-y-auto max-h-[80vh]">
@@ -354,6 +358,8 @@ export default function ChatLayout() {
   const [loadingMsg, setLoadingMsg] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [emojiCategory, setEmojiCategory] = useState(0);
+  const [showHeaderDropdown, setShowHeaderDropdown] = useState(false);
+  const [showChatDropdown, setShowChatDropdown] = useState(false);
 
   // UI Tabs State
   const [activeLeftTab, setActiveLeftTab] = useState<'contacts' | 'groups' | 'globe'>('contacts');
@@ -626,7 +632,7 @@ export default function ChatLayout() {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-[#E8F3F1] dark:from-[#212624] via-[#F4EBE3] dark:via-[#26211E] to-[#FCDED4] dark:to-[#2B2320] p-0 md:p-6 lg:p-10 font-sans antialiased selection:bg-[#3A352F]/10 dark:selection:bg-[#FDFBF7]/10 text-[#3A352F] dark:text-[#EAE3D9] transition-colors duration-500">
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-[#E8F3F1] dark:from-[#212624] via-[#F4EBE3] dark:via-[#26211E] to-[#FCDED4] dark:to-[#2B2320] p-0 font-sans antialiased selection:bg-[#3A352F]/10 dark:selection:bg-[#FDFBF7]/10 text-[#3A352F] dark:text-[#EAE3D9] transition-colors duration-500">
       {showSettings && (
         <SettingsModal
           user={me}
@@ -638,10 +644,10 @@ export default function ChatLayout() {
 
       {/* Main Glassmorphic Container */}
       <motion.div 
-        initial={{ opacity: 0, scale: 0.98 }}
-        animate={{ opacity: 1, scale: 1 }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-        className="flex w-full h-screen md:h-full max-w-[1400px] md:max-h-[850px] bg-[#FAF3E6]/90 dark:bg-[#1C1B1A]/90 backdrop-blur-2xl md:rounded-[3rem] shadow-2xl overflow-hidden border border-white/60 dark:border-white/10 relative transition-colors duration-500"
+        className="flex w-full h-screen bg-[#FAF3E6]/90 dark:bg-[#1C1B1A]/90 backdrop-blur-2xl overflow-hidden relative transition-colors duration-500"
       >
         
         {/* ── LEFT SIDEBAR (CONTACTS) ────────────────────────────────────────────────── */}
@@ -705,9 +711,25 @@ export default function ChatLayout() {
 
             {/* Contacts List */}
             <div className="flex-1 overflow-y-auto px-4 pb-6 space-y-1">
-              <AnimatePresence>
-                {sortedContacts.length === 0 ? (
-                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center justify-center h-48 text-center px-6">
+              <AnimatePresence mode="wait">
+                {activeLeftTab === 'groups' ? (
+                  <motion.div key="groups" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex flex-col items-center justify-center h-48 text-center px-6 mt-10">
+                    <div className="w-16 h-16 rounded-full bg-white dark:bg-[#2D2A27] flex items-center justify-center shadow-sm mb-4">
+                      <Users size={24} className="text-[#968E85]" />
+                    </div>
+                    <p className="text-[#3A352F] dark:text-[#FDFBF7] font-bold mb-1">No groups yet</p>
+                    <p className="text-[#968E85] dark:text-[#A19C95] text-sm font-semibold">Create a group to start chatting</p>
+                  </motion.div>
+                ) : activeLeftTab === 'globe' ? (
+                  <motion.div key="globe" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex flex-col items-center justify-center h-48 text-center px-6 mt-10">
+                    <div className="w-16 h-16 rounded-full bg-white dark:bg-[#2D2A27] flex items-center justify-center shadow-sm mb-4">
+                      <Globe size={24} className="text-[#968E85]" />
+                    </div>
+                    <p className="text-[#3A352F] dark:text-[#FDFBF7] font-bold mb-1">Global Feed</p>
+                    <p className="text-[#968E85] dark:text-[#A19C95] text-sm font-semibold">Coming soon to MConnect</p>
+                  </motion.div>
+                ) : sortedContacts.length === 0 ? (
+                  <motion.div key="empty-contacts" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex flex-col items-center justify-center h-48 text-center px-6 mt-10">
                     <p className="text-[#968E85] dark:text-[#A19C95] text-sm font-semibold transition-colors duration-500">No contacts found</p>
                   </motion.div>
                 ) : (
@@ -783,13 +805,38 @@ export default function ChatLayout() {
                   </div>
 
                   {/* Right Actions */}
-                  <div className="flex items-center gap-2">
-                    <button className="w-10 h-10 rounded-full bg-white dark:bg-[#2D2A27] flex items-center justify-center shadow-sm text-[#3A352F] dark:text-[#FDFBF7] hover:scale-105 transition-all duration-500"><Settings size={18} /></button>
-                    <button className="w-10 h-10 rounded-full bg-white dark:bg-[#2D2A27] flex items-center justify-center shadow-sm text-[#3A352F] dark:text-[#FDFBF7] hover:scale-105 transition-all duration-500"><MoreVertical size={18} /></button>
+                  <div className="flex items-center gap-2 relative">
+                    <button onClick={() => setShowSettings(true)} className="w-10 h-10 rounded-full bg-white dark:bg-[#2D2A27] flex items-center justify-center shadow-sm text-[#3A352F] dark:text-[#FDFBF7] hover:scale-105 transition-all duration-500"><Settings size={18} /></button>
+                    <button onClick={() => setShowHeaderDropdown(!showHeaderDropdown)} className="w-10 h-10 rounded-full bg-white dark:bg-[#2D2A27] flex items-center justify-center shadow-sm text-[#3A352F] dark:text-[#FDFBF7] hover:scale-105 transition-all duration-500"><MoreVertical size={18} /></button>
+                    
+                    {showHeaderDropdown && (
+                      <div className="absolute top-12 right-0 bg-white dark:bg-[#1C1B1A] border border-black/5 dark:border-white/5 rounded-2xl shadow-xl w-48 py-2 z-50">
+                        <button onClick={() => { setShowSettings(true); setShowHeaderDropdown(false); }} className="w-full text-left px-4 py-2 text-sm font-semibold hover:bg-black/5 dark:hover:bg-white/5">Settings</button>
+                        <button onClick={() => { removeAuthToken(); router.push('/login'); }} className="w-full text-left px-4 py-2 text-sm font-semibold text-red-500 hover:bg-black/5 dark:hover:bg-white/5">Log out</button>
+                      </div>
+                    )}
                   </div>
                 </div>
 
-                {/* Active Chat Info Bar */}
+                {activeHeaderTab === 'calls' ? (
+                  <div className="flex-1 flex flex-col items-center justify-center text-center p-8">
+                    <div className="w-20 h-20 bg-white dark:bg-[#1C1B1A] rounded-full flex items-center justify-center mb-6 shadow-sm border border-black/5 dark:border-white/5">
+                      <Phone size={32} className="text-[#3A352F] dark:text-[#FDFBF7]" />
+                    </div>
+                    <h2 className="text-[#3A352F] dark:text-[#FDFBF7] font-bold text-2xl mb-2">No recent calls</h2>
+                    <p className="text-[#968E85] dark:text-[#A19C95] font-medium">Your recent voice and video calls will appear here.</p>
+                  </div>
+                ) : activeHeaderTab === 'notifications' ? (
+                  <div className="flex-1 flex flex-col items-center justify-center text-center p-8">
+                    <div className="w-20 h-20 bg-white dark:bg-[#1C1B1A] rounded-full flex items-center justify-center mb-6 shadow-sm border border-black/5 dark:border-white/5">
+                      <Bell size={32} className="text-[#3A352F] dark:text-[#FDFBF7]" />
+                    </div>
+                    <h2 className="text-[#3A352F] dark:text-[#FDFBF7] font-bold text-2xl mb-2">No new notifications</h2>
+                    <p className="text-[#968E85] dark:text-[#A19C95] font-medium">You're all caught up!</p>
+                  </div>
+                ) : (
+                  <>
+                    {/* Active Chat Info Bar */}
                 <div className="px-8 py-5 flex items-center justify-between">
                   <div className="flex items-center gap-4">
                     {isMobile && (
@@ -809,10 +856,17 @@ export default function ChatLayout() {
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <button className="w-11 h-11 rounded-full bg-[#EAE3D9] dark:bg-[#33312E] flex items-center justify-center text-[#3A352F] dark:text-[#FDFBF7] hover:bg-[#E3DCD1] dark:hover:bg-[#2D2A27] transition-colors duration-500"><Phone size={18} /></button>
-                    <button className="w-11 h-11 rounded-full bg-[#EAE3D9] dark:bg-[#33312E] flex items-center justify-center text-[#3A352F] dark:text-[#FDFBF7] hover:bg-[#E3DCD1] dark:hover:bg-[#2D2A27] transition-colors duration-500"><Video size={18} /></button>
-                    <button className="w-11 h-11 rounded-full bg-transparent flex items-center justify-center text-[#968E85] dark:text-[#A19C95] hover:bg-[#EAE3D9] dark:hover:bg-[#33312E] transition-colors duration-500"><MoreVertical size={20} /></button>
+                  <div className="flex items-center gap-3 relative">
+                    <button onClick={() => alert("Call functionality coming soon!")} className="w-11 h-11 rounded-full bg-[#EAE3D9] dark:bg-[#33312E] flex items-center justify-center text-[#3A352F] dark:text-[#FDFBF7] hover:bg-[#E3DCD1] dark:hover:bg-[#2D2A27] transition-colors duration-500"><Phone size={18} /></button>
+                    <button onClick={() => alert("Video call functionality coming soon!")} className="w-11 h-11 rounded-full bg-[#EAE3D9] dark:bg-[#33312E] flex items-center justify-center text-[#3A352F] dark:text-[#FDFBF7] hover:bg-[#E3DCD1] dark:hover:bg-[#2D2A27] transition-colors duration-500"><Video size={18} /></button>
+                    <button onClick={() => setShowChatDropdown(!showChatDropdown)} className="w-11 h-11 rounded-full bg-transparent flex items-center justify-center text-[#968E85] dark:text-[#A19C95] hover:bg-[#EAE3D9] dark:hover:bg-[#33312E] transition-colors duration-500"><MoreVertical size={20} /></button>
+                    
+                    {showChatDropdown && (
+                      <div className="absolute top-12 right-0 bg-white dark:bg-[#1C1B1A] border border-black/5 dark:border-white/5 rounded-2xl shadow-xl w-48 py-2 z-50">
+                        <button onClick={() => { setMessagesMap(prev => ({ ...prev, [activeRoomId]: [] })); setShowChatDropdown(false); }} className="w-full text-left px-4 py-2 text-sm font-semibold hover:bg-black/5 dark:hover:bg-white/5 text-red-500">Clear Chat</button>
+                        <button onClick={() => setShowChatDropdown(false)} className="w-full text-left px-4 py-2 text-sm font-semibold hover:bg-black/5 dark:hover:bg-white/5">View Profile</button>
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -918,11 +972,12 @@ export default function ChatLayout() {
                         <Send size={18} className={input.trim() ? "translate-x-[2px] -translate-y-[1px]" : ""} />
                       </button>
                     </div>
+                    </div>
                   </div>
-                </div>
-              </>
-            ) : (
-              /* Splash / Welcome Screen Content State */
+                </>
+              )}
+            </>
+          ) : (
               <div className="flex-1 flex flex-col items-center justify-center text-center p-8 z-10 select-none">
                 <motion.div 
                   initial={{ scale: 0.9, opacity: 0 }}

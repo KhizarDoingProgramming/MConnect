@@ -1,3 +1,5 @@
+import { prisma } from '../lib/prisma.js';
+
 export class AiService {
   private static HF_API_KEY = process.env.HF_API_KEY;
 
@@ -35,5 +37,23 @@ export class AiService {
       console.error('Error generating AI reply:', error);
       return '';
     }
+  }
+
+  static async getBotUser() {
+    let bot = await prisma.user.findUnique({ where: { username: 'mconnect_ai' } });
+    if (!bot) {
+      bot = await prisma.user.create({
+        data: {
+          username: 'mconnect_ai',
+          email: 'ai@mconnect.local',
+          passwordHash: 'no-login-allowed',
+          displayName: 'MConnect AI',
+          status: 'online',
+          customStatus: 'Always here to help!',
+          avatarUrl: 'https://api.dicebear.com/7.x/bottts/svg?seed=MConnect'
+        }
+      });
+    }
+    return bot;
   }
 }

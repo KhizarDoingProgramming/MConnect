@@ -3,6 +3,7 @@ import { Server as HttpServer } from 'http';
 import cookie from 'cookie';
 import jwt from 'jsonwebtoken';
 import { prisma } from './lib/prisma.js';
+import { AiService } from './services/ai.service.js';
 import {
   ClientToServerEvents,
   ServerToClientEvents,
@@ -141,6 +142,41 @@ export class SocketService {
           };
 
           this.io.to(roomId).emit('message', message as Message);
+
+          // Handle AI queries
+          if (newMsg.type === 'text' && newMsg.content.trim().toLowerCase().startsWith('@ai')) {
+            const query = newMsg.content.replace(/^@ai/i, '').trim();
+            if (query) {
+              const aiReply = await AiService.generateSmartReply(query);
+              if (aiReply) {
+                const botUser = await AiService.getBotUser();
+                
+                const aiDbMsg = await prisma.message.create({
+                  data: {
+                    conversationId: roomId,
+                    senderId: botUser.id,
+                    type: 'text',
+                    content: aiReply,
+                  },
+                  include: { sender: true }
+                });
+
+                const aiMessageOut: any = {
+                  id: aiDbMsg.id,
+                  senderId: botUser.id,
+                  senderName: botUser.displayName || botUser.username,
+                  senderAvatar: botUser.avatarUrl,
+                  roomId,
+                  type: 'text',
+                  content: aiDbMsg.content,
+                  timestamp: aiDbMsg.createdAt
+                };
+                
+                this.io.to(roomId).emit('message', aiMessageOut as Message);
+              }
+            }
+          }
+
         } catch (error) {
           console.error('Error saving message:', error);
           socket.emit('error', 'Failed to send message');

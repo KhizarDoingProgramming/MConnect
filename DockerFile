@@ -11,7 +11,7 @@ COPY packages/shared ./packages/shared
 
 # Run installation and build inside the workspace
 RUN npm install
-RUN cd apps/api && npm install && npm run build
+RUN cd apps/api && npm install && npx prisma generate && npm run build
 
 EXPOSE 7860
 
