@@ -395,9 +395,9 @@ export default function ChatLayout() {
             setMe(currentUser);
             setMessagesMap(restoreMessages(localStorage.getItem(`${CHAT_STORAGE_PREFIX}${currentUser.id}`)));
             setContacts([
-              { id: 'mock-1', username: 'john_doe', displayName: 'John Doe', avatarUrl: null, customStatus: 'Hey there!', status: 'online' },
-              { id: 'mock-2', username: 'jane_smith', displayName: 'Jane Smith', avatarUrl: null, customStatus: 'At work', status: 'away' },
-              { id: 'mock-3', username: 'alex_williams', displayName: 'Alex Williams', avatarUrl: null, customStatus: 'Do not disturb', status: 'invisible' }
+              { id: 'mock-1', username: 'mustafa_khizar', displayName: 'Mustafa Khizar', avatarUrl: null, customStatus: 'Hey there!', status: 'online' },
+              { id: 'mock-2', username: 'hammad_ali', displayName: 'Hammad Ali', avatarUrl: null, customStatus: 'At work', status: 'away' },
+              { id: 'mock-3', username: 'kashif_mirza', displayName: 'Kashif Mirza', avatarUrl: null, customStatus: 'Do not disturb', status: 'invisible' }
             ]);
             return;
           }
