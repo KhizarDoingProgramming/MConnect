@@ -97,14 +97,14 @@ function Avatar({ user, size = 46 }: { user: Partial<AppUser>; size?: number }) 
       <img
         src={user.avatarUrl}
         alt={name}
-        className="rounded-full object-cover flex-shrink-0 border-2 border-[#FAF3E6]"
+        className="rounded-full object-cover flex-shrink-0 border-2 border-[#FAF3E6] dark:border-[#1C1B1A]"
         style={{ width: size, height: size }}
       />
     );
   }
   return (
     <div
-      className="rounded-full flex items-center justify-center text-[#554E44] font-bold flex-shrink-0 select-none border-2 border-[#FAF3E6]"
+      className="rounded-full flex items-center justify-center text-[#554E44] dark:text-[#EAE3D9] font-bold flex-shrink-0 select-none border-2 border-[#FAF3E6] dark:border-[#1C1B1A]"
       style={{ width: size, height: size, background: avatarColor(user.username || 'x'), fontSize: size * 0.36 }}
     >
       {initials}
@@ -112,7 +112,7 @@ function Avatar({ user, size = 46 }: { user: Partial<AppUser>; size?: number }) 
   );
 }
 
-function OnlineDot({ status, borderColor = '#FAF3E6' }: { status: string; borderColor?: string }) {
+function OnlineDot({ status, borderColor = 'var(--bg-card, #FAF3E6)' }: { status: string; borderColor?: string }) {
   const c = status === 'online' ? '#5DB075' : status === 'away' ? '#FFC107' : '#BDBDBD';
   return (
     <span
@@ -171,17 +171,17 @@ function SettingsModal({ user, onClose, onUpdate, socket }: {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-md" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 dark:bg-black/60 backdrop-blur-md" onClick={onClose}>
       <motion.div
         initial={{ opacity: 0, scale: 0.95, y: 10 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 10 }}
-        className="bg-[#FAF3E6] rounded-[2rem] w-full max-w-md mx-4 overflow-hidden shadow-2xl border border-white/50"
+        className="bg-[#FAF3E6] dark:bg-[#1C1B1A] rounded-[2rem] w-full max-w-md mx-4 overflow-hidden shadow-2xl border border-white/50 dark:border-white/10"
         onClick={e => e.stopPropagation()}
       >
-        <div className="px-6 py-5 flex items-center justify-between border-b border-[#EAE3D9]">
-          <h2 className="text-[#3A352F] font-bold text-lg">Profile & Settings</h2>
-          <button onClick={onClose} className="text-[#968E85] hover:text-[#3A352F] transition-colors p-1.5 rounded-full hover:bg-black/5">
+        <div className="px-6 py-5 flex items-center justify-between border-b border-[#EAE3D9] dark:border-[#33312E]">
+          <h2 className="text-[#3A352F] dark:text-[#FDFBF7] font-bold text-lg">Profile & Settings</h2>
+          <button onClick={onClose} className="text-[#968E85] dark:text-[#A19C95] hover:text-[#3A352F] dark:hover:text-white transition-colors p-1.5 rounded-full hover:bg-black/5 dark:hover:bg-white/10">
             <X size={20} />
           </button>
         </div>
@@ -190,15 +190,15 @@ function SettingsModal({ user, onClose, onUpdate, socket }: {
           <div className="flex flex-col items-center gap-3">
             <div className="relative">
               {avatarPreview
-                ? <img src={avatarPreview} alt="avatar" className="w-24 h-24 rounded-full object-cover ring-4 ring-white shadow-md" />
-                : <div className="w-24 h-24 rounded-full flex items-center justify-center text-[#554E44] text-3xl font-bold ring-4 ring-white shadow-md"
+                ? <img src={avatarPreview} alt="avatar" className="w-24 h-24 rounded-full object-cover ring-4 ring-white dark:ring-[#2D2A27] shadow-md" />
+                : <div className="w-24 h-24 rounded-full flex items-center justify-center text-[#554E44] text-3xl font-bold ring-4 ring-white dark:ring-[#2D2A27] shadow-md"
                   style={{ background: avatarColor(user.username) }}>
                   {(displayName || user.username).slice(0, 2).toUpperCase()}
                 </div>
               }
               <button
                 onClick={() => fileRef.current?.click()}
-                className="absolute -bottom-1 -right-1 bg-white text-[#3A352F] rounded-full p-2.5 shadow-lg hover:scale-105 transition-transform"
+                className="absolute -bottom-1 -right-1 bg-white dark:bg-[#33312E] text-[#3A352F] dark:text-[#FDFBF7] rounded-full p-2.5 shadow-lg hover:scale-105 transition-transform"
               >
                 <Camera size={14} />
               </button>
@@ -207,43 +207,43 @@ function SettingsModal({ user, onClose, onUpdate, socket }: {
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-[#968E85] text-xs font-bold uppercase tracking-wider pl-1">Display Name</label>
-            <div className="flex items-center gap-3 bg-white rounded-2xl px-4 py-3.5 shadow-sm border border-black/5 focus-within:ring-2 ring-black/10 transition-all">
-              <Pencil size={16} className="text-[#968E85] flex-shrink-0" />
+            <label className="text-[#968E85] dark:text-[#A19C95] text-xs font-bold uppercase tracking-wider pl-1">Display Name</label>
+            <div className="flex items-center gap-3 bg-white dark:bg-[#2D2A27] rounded-2xl px-4 py-3.5 shadow-sm border border-black/5 dark:border-white/5 focus-within:ring-2 ring-black/10 dark:ring-white/10 transition-all">
+              <Pencil size={16} className="text-[#968E85] dark:text-[#A19C95] flex-shrink-0" />
               <input
                 value={displayName}
                 onChange={e => setDisplayName(e.target.value)}
                 maxLength={32}
-                className="flex-1 bg-transparent text-[#3A352F] font-medium focus:outline-none"
+                className="flex-1 bg-transparent text-[#3A352F] dark:text-[#FDFBF7] font-medium focus:outline-none"
                 placeholder="Your display name"
               />
             </div>
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-[#968E85] text-xs font-bold uppercase tracking-wider pl-1">About</label>
-            <div className="flex items-center gap-3 bg-white rounded-2xl px-4 py-3.5 shadow-sm border border-black/5 focus-within:ring-2 ring-black/10 transition-all">
-              <Pencil size={16} className="text-[#968E85] flex-shrink-0" />
+            <label className="text-[#968E85] dark:text-[#A19C95] text-xs font-bold uppercase tracking-wider pl-1">About</label>
+            <div className="flex items-center gap-3 bg-white dark:bg-[#2D2A27] rounded-2xl px-4 py-3.5 shadow-sm border border-black/5 dark:border-white/5 focus-within:ring-2 ring-black/10 dark:ring-white/10 transition-all">
+              <Pencil size={16} className="text-[#968E85] dark:text-[#A19C95] flex-shrink-0" />
               <input
                 value={customStatus}
                 onChange={e => setCustomStatus(e.target.value)}
                 maxLength={80}
-                className="flex-1 bg-transparent text-[#3A352F] font-medium focus:outline-none"
+                className="flex-1 bg-transparent text-[#3A352F] dark:text-[#FDFBF7] font-medium focus:outline-none"
                 placeholder="Hey there! I am using MConnect."
               />
             </div>
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-[#968E85] text-xs font-bold uppercase tracking-wider pl-1">Status</label>
+            <label className="text-[#968E85] dark:text-[#A19C95] text-xs font-bold uppercase tracking-wider pl-1">Status</label>
             <div className="grid grid-cols-2 gap-2">
               {(['online', 'away', 'invisible', 'offline'] as const).map(s => (
                 <button
                   key={s}
                   onClick={() => setStatus(s)}
                   className={`py-3 rounded-2xl text-sm font-semibold capitalize transition-all border ${status === s
-                    ? 'bg-white text-[#3A352F] border-transparent shadow-sm'
-                    : 'bg-transparent text-[#968E85] border-[#EAE3D9] hover:bg-white/50'
+                    ? 'bg-white dark:bg-[#33312E] text-[#3A352F] dark:text-[#FDFBF7] border-transparent shadow-sm'
+                    : 'bg-transparent text-[#968E85] dark:text-[#A19C95] border-[#EAE3D9] dark:border-[#33312E] hover:bg-white/50 dark:hover:bg-[#2D2A27]'
                     }`}
                 >
                   <span className="mr-2 text-base">
@@ -259,13 +259,13 @@ function SettingsModal({ user, onClose, onUpdate, socket }: {
             <button
               onClick={handleSave}
               disabled={saving}
-              className="flex-1 bg-[#3A352F] hover:bg-[#2A2520] text-white disabled:opacity-50 font-bold py-3.5 rounded-2xl transition-all shadow-md active:scale-[0.98]"
+              className="flex-1 bg-[#3A352F] dark:bg-[#FDFBF7] hover:bg-[#2A2520] dark:hover:bg-[#E0D9D0] text-white dark:text-[#121212] disabled:opacity-50 font-bold py-3.5 rounded-2xl transition-all shadow-md active:scale-[0.98]"
             >
               {saved ? '✓ Saved!' : saving ? 'Saving...' : 'Save Profile'}
             </button>
             <button
               onClick={handleLogout}
-              className="flex items-center justify-center bg-[#FFEAE6] text-[#FF5B5B] px-5 py-3.5 rounded-2xl font-bold transition-all hover:bg-[#FFDCD6] active:scale-[0.98]"
+              className="flex items-center justify-center bg-[#FFEAE6] dark:bg-[#4A2323] text-[#FF5B5B] dark:text-[#FF8888] px-5 py-3.5 rounded-2xl font-bold transition-all hover:bg-[#FFDCD6] dark:hover:bg-[#3D1E1E] active:scale-[0.98]"
             >
               <LogOut size={18} />
             </button>
@@ -290,8 +290,8 @@ function Bubble({ msg, isOwn, showTail }: { msg: AppMessage; isOwn: boolean; sho
         className={`
           relative max-w-[75%] md:max-w-[65%] px-5 py-3.5 shadow-sm
           ${isOwn
-            ? `bg-white text-[#3A352F] rounded-3xl ${showTail ? 'rounded-tr-md' : ''}`
-            : `bg-[#E3DCD1] text-[#3A352F] rounded-3xl ${showTail ? 'rounded-tl-md' : ''}`
+            ? `bg-white dark:bg-[#33312E] text-[#3A352F] dark:text-[#FDFBF7] rounded-3xl ${showTail ? 'rounded-tr-md' : ''}`
+            : `bg-[#E3DCD1] dark:bg-[#2D2A27] text-[#3A352F] dark:text-[#FDFBF7] rounded-3xl ${showTail ? 'rounded-tl-md' : ''}`
           }
           ${msg.pending ? 'opacity-50' : ''}
         `}
@@ -309,25 +309,25 @@ function Bubble({ msg, isOwn, showTail }: { msg: AppMessage; isOwn: boolean; sho
           <a
             href={msg.content}
             download={msg.fileName || 'attachment'}
-            className="flex items-center gap-3 min-w-[200px] rounded-2xl bg-black/5 px-4 py-3 hover:bg-black/10 transition-colors"
+            className="flex items-center gap-3 min-w-[200px] rounded-2xl bg-black/5 dark:bg-white/5 px-4 py-3 hover:bg-black/10 dark:hover:bg-white/10 transition-colors"
           >
-            <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center flex-shrink-0 shadow-sm">
-              <Paperclip size={18} className="text-[#3A352F]" />
+            <div className="w-10 h-10 rounded-full bg-white dark:bg-[#1C1B1A] flex items-center justify-center flex-shrink-0 shadow-sm">
+              <Paperclip size={18} className="text-[#3A352F] dark:text-[#FDFBF7]" />
             </div>
             <span className="min-w-0">
-              <span className="block text-sm font-bold truncate text-[#3A352F]">{msg.fileName || 'Attachment'}</span>
+              <span className="block text-sm font-bold truncate text-[#3A352F] dark:text-[#FDFBF7]">{msg.fileName || 'Attachment'}</span>
               {typeof msg.fileSize === 'number' && (
-                <span className="block text-xs font-semibold text-[#968E85]">{(msg.fileSize / 1024).toFixed(1)} KB</span>
+                <span className="block text-xs font-semibold text-[#968E85] dark:text-[#A19C95]">{(msg.fileSize / 1024).toFixed(1)} KB</span>
               )}
             </span>
           </a>
         )}
 
         <div className={`flex items-center gap-1.5 mt-1.5 ${isOwn ? 'justify-end' : 'justify-start'}`}>
-          <span className="text-[10px] font-bold text-[#968E85] select-none">{time}</span>
+          <span className="text-[10px] font-bold text-[#968E85] dark:text-[#A19C95] select-none">{time}</span>
           {isOwn && (
             msg.pending
-              ? <Check size={12} className="text-[#968E85]" />
+              ? <Check size={12} className="text-[#968E85] dark:text-[#A19C95]" />
               : <CheckCheck size={12} className="text-[#5DB075]" />
           )}
         </div>
@@ -616,17 +616,17 @@ export default function ChatLayout() {
 
   if (!me) {
     return (
-      <div className="flex h-screen items-center justify-center bg-gradient-to-br from-[#E0F7FA] to-[#FFCCBC]">
-        <div className="flex flex-col items-center gap-6 bg-white/50 p-8 rounded-[2rem] backdrop-blur-md">
-          <div className="w-12 h-12 border-4 border-[#3A352F] border-t-transparent rounded-full animate-spin" />
-          <p className="text-[#3A352F] font-bold tracking-widest uppercase">Connecting...</p>
+      <div className="flex h-screen items-center justify-center bg-gradient-to-br from-[#E0F7FA] dark:from-[#111A1B] to-[#FFCCBC] dark:to-[#2B1B15] transition-colors duration-500">
+        <div className="flex flex-col items-center gap-6 bg-white/50 dark:bg-black/50 p-8 rounded-[2rem] backdrop-blur-md">
+          <div className="w-12 h-12 border-4 border-[#3A352F] dark:border-[#FDFBF7] border-t-transparent rounded-full animate-spin" />
+          <p className="text-[#3A352F] dark:text-[#FDFBF7] font-bold tracking-widest uppercase">Connecting...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-[#E8F3F1] via-[#F4EBE3] to-[#FCDED4] p-0 md:p-6 lg:p-10 font-sans antialiased selection:bg-[#3A352F]/10 text-[#3A352F]">
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-[#E8F3F1] dark:from-[#212624] via-[#F4EBE3] dark:via-[#26211E] to-[#FCDED4] dark:to-[#2B2320] p-0 md:p-6 lg:p-10 font-sans antialiased selection:bg-[#3A352F]/10 dark:selection:bg-[#FDFBF7]/10 text-[#3A352F] dark:text-[#EAE3D9] transition-colors duration-500">
       {showSettings && (
         <SettingsModal
           user={me}
@@ -641,13 +641,13 @@ export default function ChatLayout() {
         initial={{ opacity: 0, scale: 0.98 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-        className="flex w-full h-screen md:h-full max-w-[1400px] md:max-h-[850px] bg-[#FAF3E6]/90 backdrop-blur-2xl md:rounded-[3rem] shadow-2xl overflow-hidden border border-white/60 relative"
+        className="flex w-full h-screen md:h-full max-w-[1400px] md:max-h-[850px] bg-[#FAF3E6]/90 dark:bg-[#1C1B1A]/90 backdrop-blur-2xl md:rounded-[3rem] shadow-2xl overflow-hidden border border-white/60 dark:border-white/10 relative transition-colors duration-500"
       >
         
         {/* ── LEFT SIDEBAR (CONTACTS) ────────────────────────────────────────────────── */}
         {(!isMobile || !showChat) && (
           <div
-            className="flex flex-col border-r border-[#EAE3D9]/60 flex-shrink-0 relative z-10"
+            className="flex flex-col border-r border-[#EAE3D9]/60 dark:border-[#33312E]/60 flex-shrink-0 relative z-10 transition-colors duration-500"
             style={{ width: isMobile ? '100%' : '360px' }}
           >
             {/* User Profile Header (Top Left) */}
@@ -655,14 +655,14 @@ export default function ChatLayout() {
                <button onClick={() => setShowSettings(true)} className="flex items-center gap-3 hover:opacity-80 transition-opacity outline-none">
                  <div className="relative">
                    <Avatar user={me} size={48} />
-                   <OnlineDot status={me.status} />
+                   <OnlineDot status={me.status} borderColor="transparent" />
                  </div>
                  <div className="text-left hidden sm:block md:hidden lg:block">
-                   <p className="font-bold text-[#3A352F] text-sm leading-tight">{me.displayName}</p>
-                   <p className="text-xs font-semibold text-[#968E85]">My Account</p>
+                   <p className="font-bold text-[#3A352F] dark:text-[#FDFBF7] text-sm leading-tight transition-colors duration-500">{me.displayName}</p>
+                   <p className="text-xs font-semibold text-[#968E85] dark:text-[#A19C95] transition-colors duration-500">My Account</p>
                  </div>
                </button>
-               <button onClick={() => setShowSettings(true)} className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-[#3A352F] shadow-sm hover:scale-105 transition-transform">
+               <button onClick={() => setShowSettings(true)} className="w-10 h-10 rounded-full bg-white dark:bg-[#2D2A27] flex items-center justify-center text-[#3A352F] dark:text-[#FDFBF7] shadow-sm hover:scale-105 transition-all duration-500">
                  <Settings size={18} />
                </button>
             </div>
@@ -671,19 +671,19 @@ export default function ChatLayout() {
             <div className="px-6 py-2 flex items-center gap-2">
               <button 
                 onClick={() => setActiveLeftTab('contacts')}
-                className={`flex-1 py-2 rounded-xl flex justify-center items-center transition-all ${activeLeftTab === 'contacts' ? 'bg-[#E3DCD1] text-[#3A352F] shadow-inner' : 'text-[#968E85] hover:bg-[#EAE3D9]'}`}
+                className={`flex-1 py-2 rounded-xl flex justify-center items-center transition-all duration-500 ${activeLeftTab === 'contacts' ? 'bg-[#E3DCD1] dark:bg-[#2D2A27] text-[#3A352F] dark:text-[#FDFBF7] shadow-inner' : 'text-[#968E85] dark:text-[#A19C95] hover:bg-[#EAE3D9] dark:hover:bg-[#33312E]'}`}
               >
                 <Users size={18} />
               </button>
               <button 
                 onClick={() => setActiveLeftTab('groups')}
-                className={`flex-1 py-2 rounded-xl flex justify-center items-center transition-all ${activeLeftTab === 'groups' ? 'bg-[#E3DCD1] text-[#3A352F] shadow-inner' : 'text-[#968E85] hover:bg-[#EAE3D9]'}`}
+                className={`flex-1 py-2 rounded-xl flex justify-center items-center transition-all duration-500 ${activeLeftTab === 'groups' ? 'bg-[#E3DCD1] dark:bg-[#2D2A27] text-[#3A352F] dark:text-[#FDFBF7] shadow-inner' : 'text-[#968E85] dark:text-[#A19C95] hover:bg-[#EAE3D9] dark:hover:bg-[#33312E]'}`}
               >
                 <Users size={18} />
               </button>
               <button 
                 onClick={() => setActiveLeftTab('globe')}
-                className={`flex-1 py-2 rounded-xl flex justify-center items-center transition-all ${activeLeftTab === 'globe' ? 'bg-[#E3DCD1] text-[#3A352F] shadow-inner' : 'text-[#968E85] hover:bg-[#EAE3D9]'}`}
+                className={`flex-1 py-2 rounded-xl flex justify-center items-center transition-all duration-500 ${activeLeftTab === 'globe' ? 'bg-[#E3DCD1] dark:bg-[#2D2A27] text-[#3A352F] dark:text-[#FDFBF7] shadow-inner' : 'text-[#968E85] dark:text-[#A19C95] hover:bg-[#EAE3D9] dark:hover:bg-[#33312E]'}`}
               >
                 <Globe size={18} />
               </button>
@@ -691,15 +691,15 @@ export default function ChatLayout() {
 
             {/* Search Box */}
             <div className="px-6 py-4">
-              <div className="bg-white rounded-full flex items-center px-4 py-3 shadow-sm border border-black/5 focus-within:ring-2 ring-black/10 transition-all">
-                <Search size={16} className="text-[#968E85]" />
+              <div className="bg-white dark:bg-[#2D2A27] rounded-full flex items-center px-4 py-3 shadow-sm border border-black/5 dark:border-white/5 focus-within:ring-2 ring-black/10 dark:ring-white/10 transition-all duration-500">
+                <Search size={16} className="text-[#968E85] dark:text-[#A19C95]" />
                 <input
                   value={search}
                   onChange={e => setSearch(e.target.value)}
                   placeholder="Search..."
-                  className="bg-transparent border-none outline-none ml-3 text-sm font-semibold text-[#3A352F] placeholder-[#B5B0AA] w-full"
+                  className="bg-transparent border-none outline-none ml-3 text-sm font-semibold text-[#3A352F] dark:text-[#FDFBF7] placeholder-[#B5B0AA] dark:placeholder-[#7C746B] w-full transition-colors duration-500"
                 />
-                {search && <X size={16} className="text-[#968E85] cursor-pointer hover:text-[#3A352F]" onClick={() => setSearch('')} />}
+                {search && <X size={16} className="text-[#968E85] dark:text-[#A19C95] cursor-pointer hover:text-[#3A352F] dark:hover:text-[#FDFBF7] transition-colors" onClick={() => setSearch('')} />}
               </div>
             </div>
 
@@ -708,7 +708,7 @@ export default function ChatLayout() {
               <AnimatePresence>
                 {sortedContacts.length === 0 ? (
                   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center justify-center h-48 text-center px-6">
-                    <p className="text-[#968E85] text-sm font-semibold">No contacts found</p>
+                    <p className="text-[#968E85] dark:text-[#A19C95] text-sm font-semibold transition-colors duration-500">No contacts found</p>
                   </motion.div>
                 ) : (
                   sortedContacts.map((c, i) => {
@@ -721,22 +721,22 @@ export default function ChatLayout() {
                         transition={{ delay: i * 0.03 }}
                         key={c.id}
                         onClick={() => openChat(c)}
-                        className={`flex items-center gap-4 px-4 py-3 cursor-pointer transition-all rounded-2xl ${isActive ? 'bg-[#E3DCD1] shadow-inner scale-[0.98]' : 'hover:bg-[#EAE3D9] hover:scale-[0.99]'}`}
+                        className={`flex items-center gap-4 px-4 py-3 cursor-pointer transition-all duration-500 rounded-2xl ${isActive ? 'bg-[#E3DCD1] dark:bg-[#2D2A27] shadow-inner scale-[0.98]' : 'hover:bg-[#EAE3D9] dark:hover:bg-[#33312E] hover:scale-[0.99]'}`}
                       >
                         <div className="relative flex-shrink-0">
                           <Avatar user={c} size={48} />
-                          <OnlineDot status={c.status} borderColor={isActive ? '#E3DCD1' : '#FAF3E6'} />
+                          <OnlineDot status={c.status} borderColor="transparent" />
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between mb-1">
-                            <h3 className="text-[#3A352F] font-bold text-[15px] truncate">{c.displayName}</h3>
+                            <h3 className="text-[#3A352F] dark:text-[#FDFBF7] font-bold text-[15px] truncate transition-colors duration-500">{c.displayName}</h3>
                             {lastMsg && (
-                              <span className="text-[11px] font-bold text-[#968E85]">
+                              <span className="text-[11px] font-bold text-[#968E85] dark:text-[#A19C95] transition-colors duration-500">
                                 {new Date(lastMsg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                               </span>
                             )}
                           </div>
-                          <p className="text-sm font-medium text-[#7C746B] truncate">
+                          <p className="text-sm font-medium text-[#7C746B] dark:text-[#C4BFB8] truncate transition-colors duration-500">
                             {lastMsg ? (
                               <span className="flex items-center gap-1">
                                 {lastMsg.senderId === me.id && <span className="text-[#5DB075]"><CheckCheck size={14}/></span>}
@@ -760,19 +760,19 @@ export default function ChatLayout() {
 
         {/* ── RIGHT CHAT PANEL ────────────────────────────────────────────── */}
         {(!isMobile || showChat) && (
-          <div className="flex-1 flex flex-col relative z-10 bg-white/40">
+          <div className="flex-1 flex flex-col relative z-10 bg-white/40 dark:bg-black/20 transition-colors duration-500">
             {activeContact ? (
               <>
                 {/* Chat Top Header */}
-                <div className="px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#EAE3D9]/60">
+                <div className="px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#EAE3D9]/60 dark:border-[#33312E]/60 transition-colors duration-500">
                   
                   {/* Left Tabs (Chats, Calls, Notifications) */}
-                  <div className="flex items-center gap-1 bg-[#EAE3D9] p-1 rounded-full self-start">
+                  <div className="flex items-center gap-1 bg-[#EAE3D9] dark:bg-[#33312E] p-1 rounded-full self-start transition-colors duration-500">
                     {(['chats', 'calls', 'notifications'] as const).map(tab => (
                       <button 
                         key={tab}
                         onClick={() => setActiveHeaderTab(tab)}
-                        className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold capitalize transition-all ${activeHeaderTab === tab ? 'bg-white shadow-sm text-[#3A352F]' : 'text-[#968E85] hover:text-[#3A352F]'}`}
+                        className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold capitalize transition-all duration-500 ${activeHeaderTab === tab ? 'bg-white dark:bg-[#1C1B1A] shadow-sm text-[#3A352F] dark:text-[#FDFBF7]' : 'text-[#968E85] dark:text-[#A19C95] hover:text-[#3A352F] dark:hover:text-white'}`}
                       >
                         {tab === 'chats' && <MessageSquare size={16} />}
                         {tab === 'calls' && <Phone size={16} />}
@@ -784,8 +784,8 @@ export default function ChatLayout() {
 
                   {/* Right Actions */}
                   <div className="flex items-center gap-2">
-                    <button className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm text-[#3A352F] hover:scale-105 transition-transform"><Settings size={18} /></button>
-                    <button className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm text-[#3A352F] hover:scale-105 transition-transform"><MoreVertical size={18} /></button>
+                    <button className="w-10 h-10 rounded-full bg-white dark:bg-[#2D2A27] flex items-center justify-center shadow-sm text-[#3A352F] dark:text-[#FDFBF7] hover:scale-105 transition-all duration-500"><Settings size={18} /></button>
+                    <button className="w-10 h-10 rounded-full bg-white dark:bg-[#2D2A27] flex items-center justify-center shadow-sm text-[#3A352F] dark:text-[#FDFBF7] hover:scale-105 transition-all duration-500"><MoreVertical size={18} /></button>
                   </div>
                 </div>
 
@@ -793,26 +793,26 @@ export default function ChatLayout() {
                 <div className="px-8 py-5 flex items-center justify-between">
                   <div className="flex items-center gap-4">
                     {isMobile && (
-                      <button onClick={goBack} className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm text-[#3A352F] hover:scale-105 transition-transform mr-2">
+                      <button onClick={goBack} className="w-10 h-10 rounded-full bg-white dark:bg-[#2D2A27] flex items-center justify-center shadow-sm text-[#3A352F] dark:text-[#FDFBF7] hover:scale-105 transition-all mr-2">
                         <ArrowLeft size={18} />
                       </button>
                     )}
                     <div className="relative">
                       <Avatar user={activeContact} size={52} />
-                      <OnlineDot status={activeContact.status} />
+                      <OnlineDot status={activeContact.status} borderColor="transparent" />
                     </div>
                     <div>
-                      <h2 className="text-xl font-extrabold text-[#3A352F]">{activeContact.displayName}</h2>
+                      <h2 className="text-xl font-extrabold text-[#3A352F] dark:text-[#FDFBF7] transition-colors duration-500">{activeContact.displayName}</h2>
                       <div className="flex items-center gap-1.5 mt-0.5">
                         <span className={`w-2 h-2 rounded-full ${activeContact.status === 'online' ? 'bg-[#5DB075]' : 'bg-[#BDBDBD]'}`} />
-                        <span className="text-sm font-bold text-[#968E85] capitalize">{isTyping ? 'Typing...' : activeContact.status}</span>
+                        <span className="text-sm font-bold text-[#968E85] dark:text-[#A19C95] capitalize transition-colors duration-500">{isTyping ? 'Typing...' : activeContact.status}</span>
                       </div>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
-                    <button className="w-11 h-11 rounded-full bg-[#EAE3D9] flex items-center justify-center text-[#3A352F] hover:bg-[#E3DCD1] transition-colors"><Phone size={18} /></button>
-                    <button className="w-11 h-11 rounded-full bg-[#EAE3D9] flex items-center justify-center text-[#3A352F] hover:bg-[#E3DCD1] transition-colors"><Video size={18} /></button>
-                    <button className="w-11 h-11 rounded-full bg-transparent flex items-center justify-center text-[#968E85] hover:bg-[#EAE3D9] transition-colors"><MoreVertical size={20} /></button>
+                    <button className="w-11 h-11 rounded-full bg-[#EAE3D9] dark:bg-[#33312E] flex items-center justify-center text-[#3A352F] dark:text-[#FDFBF7] hover:bg-[#E3DCD1] dark:hover:bg-[#2D2A27] transition-colors duration-500"><Phone size={18} /></button>
+                    <button className="w-11 h-11 rounded-full bg-[#EAE3D9] dark:bg-[#33312E] flex items-center justify-center text-[#3A352F] dark:text-[#FDFBF7] hover:bg-[#E3DCD1] dark:hover:bg-[#2D2A27] transition-colors duration-500"><Video size={18} /></button>
+                    <button className="w-11 h-11 rounded-full bg-transparent flex items-center justify-center text-[#968E85] dark:text-[#A19C95] hover:bg-[#EAE3D9] dark:hover:bg-[#33312E] transition-colors duration-500"><MoreVertical size={20} /></button>
                   </div>
                 </div>
 
@@ -820,7 +820,7 @@ export default function ChatLayout() {
                 <div className="flex-1 overflow-y-auto px-6 md:px-10 py-2 space-y-1">
                   {loadingMsg ? (
                     <div className="flex items-center justify-center h-full">
-                      <div className="w-8 h-8 border-4 border-[#3A352F] border-t-transparent rounded-full animate-spin" />
+                      <div className="w-8 h-8 border-4 border-[#3A352F] dark:border-[#FDFBF7] border-t-transparent rounded-full animate-spin transition-colors duration-500" />
                     </div>
                   ) : (
                     activeMessages.map((msg, idx) => {
@@ -832,10 +832,10 @@ export default function ChatLayout() {
                   )}
                   {isTyping && (
                     <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} className="flex justify-start mb-2">
-                      <div className="bg-[#E3DCD1] px-4 py-3 rounded-3xl rounded-tl-md flex items-center gap-1.5">
-                        <span className="w-2 h-2 rounded-full bg-[#968E85] animate-bounce" />
-                        <span className="w-2 h-2 rounded-full bg-[#968E85] animate-bounce" style={{ animationDelay: '0.15s' }} />
-                        <span className="w-2 h-2 rounded-full bg-[#968E85] animate-bounce" style={{ animationDelay: '0.3s' }} />
+                      <div className="bg-[#E3DCD1] dark:bg-[#2D2A27] px-4 py-3 rounded-3xl rounded-tl-md flex items-center gap-1.5 transition-colors duration-500">
+                        <span className="w-2 h-2 rounded-full bg-[#968E85] dark:bg-[#A19C95] animate-bounce" />
+                        <span className="w-2 h-2 rounded-full bg-[#968E85] dark:bg-[#A19C95] animate-bounce" style={{ animationDelay: '0.15s' }} />
+                        <span className="w-2 h-2 rounded-full bg-[#968E85] dark:bg-[#A19C95] animate-bounce" style={{ animationDelay: '0.3s' }} />
                       </div>
                     </motion.div>
                   )}
@@ -849,14 +849,14 @@ export default function ChatLayout() {
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: 20 }}
-                      className="absolute bottom-24 left-10 right-10 md:left-20 md:right-20 bg-white rounded-[2rem] shadow-2xl border border-black/5 z-20 flex flex-col h-64 overflow-hidden"
+                      className="absolute bottom-24 left-10 right-10 md:left-20 md:right-20 bg-white dark:bg-[#1C1B1A] rounded-[2rem] shadow-2xl border border-black/5 dark:border-white/5 z-20 flex flex-col h-64 overflow-hidden transition-colors duration-500"
                     >
-                      <div className="flex overflow-x-auto bg-[#FAF3E6] border-b border-[#EAE3D9] scrollbar-none flex-shrink-0 p-2 gap-2">
+                      <div className="flex overflow-x-auto bg-[#FAF3E6] dark:bg-[#2D2A27] border-b border-[#EAE3D9] dark:border-[#33312E] scrollbar-none flex-shrink-0 p-2 gap-2 transition-colors duration-500">
                         {EMOJI_CATEGORIES.map((cat, i) => (
                           <button
                             key={cat.name}
                             onClick={() => setEmojiCategory(i)}
-                            className={`px-4 py-2 text-xs font-bold whitespace-nowrap rounded-full transition-colors ${emojiCategory === i ? 'bg-white text-[#3A352F] shadow-sm' : 'bg-transparent text-[#968E85] hover:bg-black/5'}`}
+                            className={`px-4 py-2 text-xs font-bold whitespace-nowrap rounded-full transition-colors duration-500 ${emojiCategory === i ? 'bg-white dark:bg-[#1C1B1A] text-[#3A352F] dark:text-[#FDFBF7] shadow-sm' : 'bg-transparent text-[#968E85] dark:text-[#A19C95] hover:bg-black/5 dark:hover:bg-white/5'}`}
                           >
                             {cat.name}
                           </button>
@@ -873,11 +873,11 @@ export default function ChatLayout() {
 
                 {/* Bottom Input Area */}
                 <div className="px-6 md:px-10 pb-6 pt-2 z-10">
-                  <div className="bg-white rounded-full flex items-center p-2 shadow-lg shadow-black/5 border border-black/5">
+                  <div className="bg-white dark:bg-[#2D2A27] rounded-full flex items-center p-2 shadow-lg shadow-black/5 dark:shadow-black/20 border border-black/5 dark:border-white/5 transition-colors duration-500">
                     {/* Add Attachment Button */}
                     <button
                       onClick={() => attachRef.current?.click()}
-                      className="w-12 h-12 rounded-full flex items-center justify-center text-[#968E85] hover:bg-[#FAF3E6] hover:text-[#3A352F] transition-colors flex-shrink-0"
+                      className="w-12 h-12 rounded-full flex items-center justify-center text-[#968E85] dark:text-[#A19C95] hover:bg-[#FAF3E6] dark:hover:bg-[#1C1B1A] hover:text-[#3A352F] dark:hover:text-[#FDFBF7] transition-colors flex-shrink-0"
                     >
                       <Plus size={22} />
                     </button>
@@ -896,24 +896,24 @@ export default function ChatLayout() {
                       onChange={handleInputChange}
                       onKeyDown={e => e.key === 'Enter' && handleSend()}
                       placeholder="Type message here..."
-                      className="flex-1 bg-transparent px-4 text-[15px] font-medium text-[#3A352F] placeholder-[#B5B0AA] focus:outline-none"
+                      className="flex-1 bg-transparent px-4 text-[15px] font-medium text-[#3A352F] dark:text-[#FDFBF7] placeholder-[#B5B0AA] dark:placeholder-[#7C746B] focus:outline-none transition-colors duration-500"
                     />
 
                     {/* Right Actions */}
                     <div className="flex items-center gap-1 pr-1 flex-shrink-0">
                       <button
                         onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-                        className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${showEmojiPicker ? 'bg-[#EAE3D9] text-[#3A352F]' : 'text-[#968E85] hover:bg-[#FAF3E6] hover:text-[#3A352F]'}`}
+                        className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-500 ${showEmojiPicker ? 'bg-[#EAE3D9] dark:bg-[#33312E] text-[#3A352F] dark:text-[#FDFBF7]' : 'text-[#968E85] dark:text-[#A19C95] hover:bg-[#FAF3E6] dark:hover:bg-[#1C1B1A] hover:text-[#3A352F] dark:hover:text-[#FDFBF7]'}`}
                       >
                         <Smile size={20} />
                       </button>
-                      <button className="w-10 h-10 rounded-full flex items-center justify-center text-[#968E85] hover:bg-[#FAF3E6] hover:text-[#3A352F] transition-colors">
+                      <button className="w-10 h-10 rounded-full flex items-center justify-center text-[#968E85] dark:text-[#A19C95] hover:bg-[#FAF3E6] dark:hover:bg-[#1C1B1A] hover:text-[#3A352F] dark:hover:text-[#FDFBF7] transition-colors duration-500">
                         <Mic size={20} />
                       </button>
                       <button
                         onClick={handleSend}
                         disabled={!input.trim()}
-                        className="w-12 h-12 rounded-full bg-[#3A352F] text-white flex items-center justify-center shadow-md disabled:opacity-50 disabled:scale-100 hover:scale-105 active:scale-95 transition-all ml-1"
+                        className="w-12 h-12 rounded-full bg-[#3A352F] dark:bg-[#FDFBF7] text-white dark:text-[#121212] flex items-center justify-center shadow-md disabled:opacity-50 disabled:scale-100 hover:scale-105 active:scale-95 transition-all ml-1 duration-500"
                       >
                         <Send size={18} className={input.trim() ? "translate-x-[2px] -translate-y-[1px]" : ""} />
                       </button>
@@ -928,15 +928,15 @@ export default function ChatLayout() {
                   initial={{ scale: 0.9, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   transition={{ duration: 0.5 }}
-                  className="w-32 h-32 bg-white rounded-[2.5rem] flex items-center justify-center mb-8 shadow-xl border border-black/5"
+                  className="w-32 h-32 bg-white dark:bg-[#1C1B1A] rounded-[2.5rem] flex items-center justify-center mb-8 shadow-xl border border-black/5 dark:border-white/5 transition-colors duration-500"
                 >
-                  <MessageSquare size={48} className="text-[#3A352F]" />
+                  <MessageSquare size={48} className="text-[#3A352F] dark:text-[#FDFBF7]" />
                 </motion.div>
                 <motion.h2 
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ duration: 0.5, delay: 0.1 }}
-                  className="text-[#3A352F] font-extrabold text-3xl md:text-4xl mb-4 tracking-tight"
+                  className="text-[#3A352F] dark:text-[#FDFBF7] font-extrabold text-3xl md:text-4xl mb-4 tracking-tight transition-colors duration-500"
                 >
                   Welcome to MConnect
                 </motion.h2>
@@ -944,7 +944,7 @@ export default function ChatLayout() {
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ duration: 0.5, delay: 0.2 }}
-                  className="text-[#7C746B] text-lg max-w-md font-medium leading-relaxed mb-10"
+                  className="text-[#7C746B] dark:text-[#C4BFB8] text-lg max-w-md font-medium leading-relaxed mb-10 transition-colors duration-500"
                 >
                   Send and receive messages in real time with our beautiful new interface.
                 </motion.p>
@@ -952,7 +952,7 @@ export default function ChatLayout() {
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ duration: 0.5, delay: 0.3 }}
-                  className="flex items-center gap-2 text-sm font-bold text-[#5DB075] bg-white px-5 py-2.5 rounded-full shadow-sm"
+                  className="flex items-center gap-2 text-sm font-bold text-[#5DB075] bg-white dark:bg-[#2D2A27] px-5 py-2.5 rounded-full shadow-sm transition-colors duration-500"
                 >
                   <span>🔐 End-to-end encrypted connection</span>
                 </motion.div>

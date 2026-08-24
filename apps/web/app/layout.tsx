@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import PwaInstall from "../components/PwaInstall";
+import { ThemeProvider } from "./providers";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -9,7 +10,6 @@ export const metadata: Metadata = {
   title: "MConnect",
   description: "Real-time communication app",
   manifest: "/manifest.webmanifest",
-  themeColor: "#202c33",
   appleWebApp: {
     capable: true,
     title: "MConnect",
@@ -23,10 +23,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        {children}
-        <PwaInstall />
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+          <PwaInstall />
+        </ThemeProvider>
       </body>
     </html>
   );
