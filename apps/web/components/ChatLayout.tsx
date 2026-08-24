@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { useSocket } from '../hooks/useSocket';
 import { useRouter } from 'next/navigation';
+import { fetchApi, removeAuthToken } from '@/lib/api';
 
 // ─── Utility: generate stable DM room ID ────────────────────────────────────
 function getDmRoomId(idA: string, idB: string): string {
@@ -188,9 +189,8 @@ function SettingsModal({ user, onClose, onUpdate, socket }: {
   const handleSave = async () => {
     setSaving(true);
     try {
-      const res = await fetch('/api/profile/update', {
+      const res = await fetchApi('/profile/update', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ displayName, customStatus, avatarUrl: avatarPreview || null, status }),
       });
       if (res.ok) {
@@ -205,8 +205,7 @@ function SettingsModal({ user, onClose, onUpdate, socket }: {
   };
 
   const handleLogout = async () => {
-    if (socket) socket.emit('updateStatus', 'offline');
-    await fetch('/api/auth/logout', { method: 'POST' });
+    removeAuthToken();
     router.push('/login');
   };
 
@@ -403,8 +402,7 @@ export default function ChatLayout() {
   useEffect(() => {
     const init = async () => {
       try {
-        const [meRes, usersRes] = await Promise.all([fetch('/api/auth/me'), fetch('/api/users')]);
-        if (!meRes.ok) { router.push('/login'); return; }
+        const [meRes, usersRes] = await Promise.all([fetchApi('/auth/me'), fetchApi('/users')]);
         const meData = await meRes.json();
         const usersData = await usersRes.json();
 
@@ -448,7 +446,7 @@ export default function ChatLayout() {
     const roomId = getDmRoomId(me.id, activeContact.id);
 
     setLoadingMsg(!messagesMap[roomId]);
-    fetch(`/api/messages/${roomId}`)
+    fetchApi(`/messages/${roomId}`)
       .then(r => r.json())
       .then(data => {
         if (Array.isArray(data)) {

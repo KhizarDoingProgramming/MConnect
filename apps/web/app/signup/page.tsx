@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { fetchApi, setAuthToken } from '@/lib/api';
 
 export default function SignupPage() {
   const router = useRouter();
@@ -17,19 +18,18 @@ export default function SignupPage() {
     setLoading(true);
     setError('');
     try {
-      // Pointing directly to your Hugging Face API to bypass Vercel routing issues
-      const res = await fetch('https://khizardoingprogramming-mconnect-backend-api.hf.space/api/auth/signup', {
+      const res = await fetchApi('/auth/signup', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, username, password }),
       });
       const data = await res.json();
       if (!res.ok) {
         setError(data.error || 'Signup failed');
       } else {
+        setAuthToken(data.token);
         router.push('/');
       }
-    } catch {
+    } catch (err) {
       setError('Connection error. Please try again.');
     } finally {
       setLoading(false);

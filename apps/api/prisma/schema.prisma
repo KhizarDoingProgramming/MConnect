@@ -1,0 +1,63 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String         @id @default(uuid())
+  email          String         @unique
+  username       String         @unique
+  passwordHash   String
+  avatarUrl      String?
+  status         String         @default("offline")
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  messagesSent   Message[]      @relation("SentMessages")
+  conversations  ConversationMember[]
+}
+
+model Conversation {
+  id           String               @id @default(uuid())
+  name         String?
+  type         String               @default("private") // "private" or "group"
+  createdAt    DateTime             @default(now())
+  updatedAt    DateTime             @updatedAt
+
+  members      ConversationMember[]
+  messages     Message[]
+}
+
+model ConversationMember {
+  id             String       @id @default(uuid())
+  conversationId String
+  userId         String
+  joinedAt       DateTime     @default(now())
+  lastReadAt     DateTime?
+
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([conversationId, userId])
+}
+
+model Message {
+  id             String       @id @default(uuid())
+  conversationId String
+  senderId       String
+  type           String       @default("text") // "text", "image", "file"
+  content        String
+  imageUrl       String?
+  caption        String?
+  fileName       String?
+  fileSize       Int?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  sender         User         @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
+}
