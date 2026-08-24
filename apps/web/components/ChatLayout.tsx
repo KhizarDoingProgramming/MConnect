@@ -10,7 +10,7 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSocket } from '../hooks/useSocket';
 import { useRouter } from 'next/navigation';
-import { fetchApi, removeAuthToken } from '@/lib/api';
+import { fetchApi, removeAuthToken, getAuthToken } from '@/lib/api';
 import { ThemeToggle } from './ThemeToggle';
 
 // ─── Utility: generate stable DM room ID ────────────────────────────────────
@@ -380,6 +380,29 @@ export default function ChatLayout() {
   useEffect(() => {
     const init = async () => {
       try {
+        if (getAuthToken() === 'mock-admin-token') {
+          const mockUserStr = localStorage.getItem('mock-user');
+          if (mockUserStr) {
+            const meData = JSON.parse(mockUserStr);
+            const currentUser: AppUser = {
+              id: meData.user._id,
+              username: meData.user.username,
+              displayName: meData.user.displayName || meData.user.username,
+              avatarUrl: null,
+              customStatus: 'Bypassing backend (Local Demo)',
+              status: 'online',
+            };
+            setMe(currentUser);
+            setMessagesMap(restoreMessages(localStorage.getItem(`${CHAT_STORAGE_PREFIX}${currentUser.id}`)));
+            setContacts([
+              { id: 'mock-1', username: 'john_doe', displayName: 'John Doe', avatarUrl: null, customStatus: 'Hey there!', status: 'online' },
+              { id: 'mock-2', username: 'jane_smith', displayName: 'Jane Smith', avatarUrl: null, customStatus: 'At work', status: 'away' },
+              { id: 'mock-3', username: 'alex_williams', displayName: 'Alex Williams', avatarUrl: null, customStatus: 'Do not disturb', status: 'invisible' }
+            ]);
+            return;
+          }
+        }
+
         const [meRes, usersRes] = await Promise.all([fetchApi('/auth/me'), fetchApi('/users')]);
         const meData = await meRes.json();
         const usersData = await usersRes.json();
@@ -424,6 +447,12 @@ export default function ChatLayout() {
     const roomId = getDmRoomId(me.id, activeContact.id);
 
     setLoadingMsg(!messagesMap[roomId]);
+
+    if (getAuthToken() === 'mock-admin-token') {
+      setTimeout(() => setLoadingMsg(false), 300);
+      return;
+    }
+
     fetchApi(`/messages/${roomId}`)
       .then(r => r.json())
       .then(data => {
